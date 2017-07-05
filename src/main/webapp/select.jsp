@@ -11,7 +11,7 @@
 <title>Insert title here</title>
 </head>
 <body>
-<%
+<%--<%
 BookTitleRepositoryMongoDB bktitleRepo=new BookTitleRepositoryMongoDB(DBConnect.getConnection());
 BookTitle booktTile=bktitleRepo.findOne(request.getParameter("BookTitleId"));
 
@@ -65,6 +65,88 @@ out.print("[");
 	
 	//}
 	
+--%>
+
+
+<%
+BookTitleRepositoryMongoDB bktitleRepo=new BookTitleRepositoryMongoDB(DBConnect.getConnection());
+BookTitle booktTile=bktitleRepo.findOne(request.getParameter("BookTitleId"));
+
+out.print("[");
+
+/* Outer loop for each row. */
+//while(true)
+//{               
+	/* Starting of row of an array */
+	out.print("{");
+			/*  Inner loop for all columns */           
+    //for(int i=1;i<=14;i++)
+    	//{
+        out.print("\"" + "bookTitleID" + "\":\""  + 
+        booktTile.getBookTitleID() + "\"");
+        out.print(",");
+        
+        out.print("\"" + "isbnNumber" + "\":\""  + 
+                booktTile.getIsbnNumber() + "\"");
+                out.print(",");
+                
+        out.print("\"" + "bookName" + "\":\""  + 
+                        booktTile.getBookName() + "\"");
+                        out.print(",");
+
+        out.print("\"" + "author" + "\":\""  + 
+                         booktTile.getAuthor()+ "\"");
+                         out.print(",");
+                
+        out.print("\"" + "publication" + "\":\""  + 
+                          booktTile.getPublication()+ "\"");
+                          out.print(",");
+                         
+        out.print("\"" + "bindingType" + "\":\""  + 
+                booktTile.getBindingType()+ "\"");
+                out.print(",");           
+        
+        out.print("\"" + "tags" + "\":\""  + 
+                        booktTile.getTags().toArray()+ "\"");
+                        out.print(",");           
+                
+         out.print("\"" + "noOfPages" + "\":\""  + 
+                                booktTile.getNoOfPages()+ "\"");
+                                out.print(",");         
+       
+          out.print("\"" + "language" + "\":\""  + 
+                                        booktTile.getLanguage()+ "\"");
+                                        out.print(",");        
+           
+          out.print("\"" + "location" + "\":\""  + 
+                                                booktTile.getLocation()+ "\"");
+                                                out.print(",");       
+                                                
+        //if(i<numberOfColumns)
+        	//out.print(",");
+       // }
+	/* Starting of row of an array */
+    out.print("}");
+    out.print("]");
+    /* This if statement serves two purpose, first one is it's takes cursor to the next record and it's 
+        also check whether it is not at EOF, if not it prints a comma and a newline, as you know 
+        each row in json data is in curly braces and separated by comma. i.e. 
+       {"Name":"Simon","Age":"26"}, and if reaches EOF prints the closing bracket of the array 
+       and exists loop */
+    //if(rs.next())
+     //   out.print(",\n");
+    //else
+      //  {
+        //out.print("]");
+        //break;
+        //}
+//}
+
 %>
+
+
+
+
+
 </body>
 </html>

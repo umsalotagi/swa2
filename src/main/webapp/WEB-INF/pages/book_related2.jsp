@@ -18,6 +18,10 @@
 <title>Gentelella Alela! |</title>
 
 <!-- Bootstrap -->
+<script type="text/javascript" src="<c:url value="/resources/js/moment/angular.min.js"/>"></script>
+
+<script type="text/javascript" src="<c:url value="/resources/js/moment/app.js"/>"></script>
+
 <link href="<c:url value="/resources/vendors/bootstrap/dist/css/bootstrap.min.css"/>" rel="stylesheet">
 <!-- Font Awesome -->
 <link href="<c:url value="/resources/vendors/font-awesome/css/font-awesome.min.css"/>"
@@ -40,7 +44,7 @@
 <link href="<c:url value="/resources/build/css/custom.min.css"/>" rel="stylesheet">
 </head>
 
-<body class="nav-md">
+<body class="nav-md"  ng-app="myapp" ng-controller="myctrl">
 	<div class="container body">
 		<div class="main_container">
 			<div class="col-md-3 left_col">
@@ -363,13 +367,14 @@
 												
 															<tbody>
 																			<%!List<BookTitle> bookTitles;
-																				BookTitle bkTitle=new BookTitle();
+																				BookTitle bkTitle=null;
 																			 
 																			%>
 																			<%
 																			
 																			bookTitles=(List<BookTitle>)request.getAttribute("bookTitles");
 																			if(bookTitles!=null){
+																				bkTitle=new BookTitle();
 																			Iterator<BookTitle> i=bookTitles.iterator();
 																			while(i.hasNext()){
 																				bkTitle=i.next();
@@ -382,8 +387,8 @@
 																 
 																
 																<tr>
-																	<td><a href="form_editbook.html"><%=bkTitle.getBookTitleID() %></a></td>
-																	<td><img src="<%=bkTitle.getImgPath()%>"/></td>
+																	<td><a ng-href="#" ng-click="select(BookTitleId='<%=bkTitle.getBookTitleID()%>')"><%=bkTitle.getBookTitleID() %></a></td>
+																	<td><img src='<c:url value='<%=bkTitle.getImgPath()%>'/>'/></td>
 																	<td><%=bkTitle.getBookName()%></td>
 																	<td><%=bkTitle.getAuthor()%></td>
 																	<td><%=bkTitle.getPublication()%></td>
@@ -450,24 +455,22 @@
 													<div class="panel ">
 
 														<div class="col-sm-9 invoice-col">
-															<b>Book Title ID: </b> B13455 <br> 
-															<b>Title: </b> 4F3S8J <br> 
-															<b>Author: </b> 2/22/2014 <br> 
-															<b>Publication: </b> 968-34567 <br>
-															<b>Location: </b> 968-34567 <br>
-															<b>ISBN Number: </b> 968-34567 <br>
-															<b>Language: </b> 968-34567 <br>
-															<b>Number Of Pages: </b> 968-34567 <br>
-															<b>Tags: </b> 968-34567 <br>
-															<b>Binding Type: </b> 968-34567 <br>
-															<br>
+														<table>
+ 														<tr ng-repeat="data in tableData">
+														<td ng-repeat="(key,value) in data">{{key}}:{{value}}</td>
+														</tr>
+														</table>
 														</div>
 														
 														<div class="col-md-3 col-sm-3 col-xs-12 profile_right">
 								                      	<div class="profile_img">
 								                        <div id="crop-avatar">
 								                          <!-- Current avatar -->
-								                          <img class="img-responsive avatar-view" src="<c:url value="/resources/images/picture.jpg"/>" alt="Avatar" title="Change the avatar">
+								                          <% if(bkTitle!=null){
+								                          System.out.println("In the img if");
+								                          %>
+								                          <img class="img-responsive avatar-view" src='<c:url value='<%=bkTitle.getImgPath()%>'/>' alt="Avatar" title="Change the avatar">
+								                          <%} %>
 								                        </div>
 								                      	</div>
 								                      	</div>

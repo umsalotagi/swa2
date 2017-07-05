@@ -15,5 +15,5 @@
 	<bean id="mongoTemplate" class="org.springframework.data.mongodb.core.MongoTemplate">
 		<constructor-arg name="mongoDbFactory" ref="mongoDbFactory" />
 	</bean>
-
+<bean class="com.swapasya.model.UserCascadeSaveMongoEventListener" />
 </beans>

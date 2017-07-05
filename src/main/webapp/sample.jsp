@@ -14,7 +14,11 @@
 
 <!-- <a ng-href="#" ng-click="select(BookTitleId='.Net')">.Net</a> -->
 <button ng-click="select(BookTitleId='.Net')">Click Here</button>
-BookTitleID {{arr.bookTitleID}}
+<table>
+<tr ng-repeat="data in tableData">
+				<td ng-repeat="(key,value) in data">{{value}}</td>
+			</tr>
+			</table>
 </div>
 
 </body>

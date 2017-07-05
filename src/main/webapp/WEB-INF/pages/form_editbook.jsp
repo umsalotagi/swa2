@@ -599,29 +599,32 @@
                         	<th>
 							 <th><input type="checkbox" id="check-all" class="flat"></th>
 						  </th>
-                          <th>Name</th>
-                          <th>Position</th>
-                          <th>Office</th>
-                          <th>Age</th>
-                          <th>Start date</th>
-                          <th>Salary</th>
+                          <th>BookID</th>
+                          <th>BorrowedBy</th>
+                          <th>IssuedType</th>
+                          <th>Category</th>
+                          <th>Issued Date</th>
+                          <th>Expected Return Date</th>
                         </tr>
                       </thead>
-
-
                       <tbody>
+                      
+                        <c:forEach var="book" items="${bookTitle.getBooks()}">		
                         <tr>
                         <td>
 							 <th><input type="checkbox" id="check-all" class="flat"></th>
 						  </td>
-                          <td>Tiger Nixon</td>
-                          <td>System Architect</td>
-                          <td>Edinburgh</td>
-                          <td>61</td>
-                          <td>2011/04/25</td>
-                          <td>$320,800</td>
+						  
+                          <td>${book.getBookID()}</td>
+                          <td>${book.getBorrowedBy()}</td>
+                          <td>${book.getIssuedType()}</td>
+                          <td>${book.getCategoryType()}</td>
+                          <td>${book.getIssueDate()}</td>
+                          <td>${book.getExpectedReturnDate()}</td>
                         </tr>
-                        <tr>
+                        </c:forEach>
+                        <!-- <tr>
+                        
                         <td>
 							 <th><input type="checkbox" id="check-all" class="flat"></th>
 						  </td>
@@ -642,7 +645,7 @@
                           <td>66</td>
                           <td>2009/01/12</td>
                           <td>$86,000</td>
-                        </tr>
+                        </tr> -->
                          </tbody>
                     </table>
 

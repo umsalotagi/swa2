@@ -320,7 +320,7 @@ public class BookTitleRepositoryMongoDB implements BookTitleRepository {
 		Iterator<WaitList> i1 = waitList.iterator();
 		while (i1.hasNext()) {
 			WaitList w = i1.next();
-			waitLs.put("id", w.getId());
+		//	waitLs.put("id", w.getId());
 			waitLs.put("timestamp", w.getTimestamp());
 			bkTitle.put("waitList", waitLs);
 		}

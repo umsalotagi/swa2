@@ -4,8 +4,7 @@ import java.util.Date;
 
 import org.springframework.data.annotation.Id;
 
-public class AssignList {
-	
+public class AssignList {	
 	@Id
 	private String id;
 	

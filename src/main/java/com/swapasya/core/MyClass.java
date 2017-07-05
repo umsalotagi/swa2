@@ -35,7 +35,7 @@ public class MyClass {
 		List<AssignList> assignList=new  ArrayList<>();
 		
 		
-	BookTitle bkTitle=new BookTitle(".Net", "1232u348", "Pro ASP.NET Core MVC", "Adam Freeman","XXX", "Folded",tags , 2000, "English","1 row 2nd column");
+	BookTitle bkTitle=new BookTitle(".Net", "1232u348", "Pro ASP.NET Core MVC", "Adam Freeman","XXX", "Folded",tags , 2000, "English","1 row 2nd column","/resources/images/black_book.jpg");
 		
 		bkTitle.setBooks(books);
 		bkTitle.setWaitList(waitList);

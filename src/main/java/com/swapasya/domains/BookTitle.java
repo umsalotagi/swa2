@@ -71,7 +71,7 @@ public class BookTitle {
 	 * @param language
 	 */
 	public BookTitle(String bookTitleID, String isbnNumber, String bookName, String authour, String publication,
-			String bindingType, ArrayList<String> tags, int noOfPages, String language,String location) {
+			String bindingType, ArrayList<String> tags, int noOfPages, String language,String location,String imgPath) {
 		this.bookTitleID = bookTitleID;
 		this.isbnNumber = isbnNumber;
 		this.bookName = bookName;
@@ -82,6 +82,7 @@ public class BookTitle {
 		this.noOfPages = noOfPages;
 		this.language = language;
 		this.location=location;
+		this.imgPath=imgPath;
 //		this.category = category;
 	}
 
