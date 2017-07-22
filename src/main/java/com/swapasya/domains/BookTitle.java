@@ -98,12 +98,12 @@ public class BookTitle {
 		if (this.books==null) {
 			this.books = new ArrayList <Book>();
 		}
-		for (Book b : books) {
-			if (b.getBookID().equals(book.getBookID())) {
-				System.out.println("Duplicate book found " + book.getBookID());
-				return;
-			}
-		}
+//		for (Book b : books) {
+//			if (b.getBookID().equals(book.getBookID())) {
+//				System.out.println("Duplicate book found " + book.getBookID());
+//				return;
+//			}
+//		}
 		this.books.add(book);
 	}
 	

@@ -29,7 +29,7 @@ public class Book {
 //		@Id
 //		private ObjectId id = new ObjectId();
 	
-		@Indexed(unique=true,sparse=true)
+		@Indexed(unique=true)   //,sparse=true,docunique=true
 		private String bookID;   //  ***Mand
 		
 		private Date purchaseDate;
