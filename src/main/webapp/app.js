@@ -12,7 +12,8 @@ app.controller('myctrl', function($scope,$http) {
     	var response=$http.get("select?BookTitleId="+$scope.BookTitleId).then(function success(response){
     		   
     		$scope.tableData = response.data;
-    	
+    	//	getBooks($scope.BookTitleId);
+    		
     		alert($scope.BookTitleId);
     		//tempArr.push(response);
     		//$scope.tableData = tempArr;
@@ -20,6 +21,14 @@ app.controller('myctrl', function($scope,$http) {
     				console.log($scope.tableData);
     				});
 				}
+    $scope.getBooks=function(BookTitleId)
+    {
+    	var response=$http.get("getBooks?BookTitleId="+$scope.BookTitleId).then(function success(response){
+    		$scope.multipleBooks=response.data;
+    		alert("Inside getBooks");
+    		console.log($scope.multipleBooks);
+    	});
+    }
 });
     		
     

@@ -5,6 +5,7 @@ import java.io.PrintWriter;
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -12,6 +13,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.swapasya.domains.Book;
 import com.swapasya.domains.BookTitle;
 import com.swapasya.model.DBConnect;
 import com.swapasya.repo.BookTitleRepositoryMongoDB;
@@ -22,7 +24,7 @@ import com.swapasya.repo.BookTitleRepositoryMongoDB;
 @WebServlet("/select")
 public class SelectServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-       
+	static int count=0;
     /**
      * @see HttpServlet#HttpServlet()
      */
@@ -42,16 +44,83 @@ public class SelectServlet extends HttpServlet {
 		BookTitle booktTile=bktitleRepo.findOne(request.getParameter("BookTitleId"));
 
 		out.print("[");
+		out.print("{");
+		
+		out.print("\"" + "bookTitleID" + "\":\""  + 
+		        booktTile.getBookTitleID() + "\"");
+		        out.print(",");
+		        
+		        
+		        out.print("\"" + "isbnNumber" + "\":\""  + 
+		                booktTile.getIsbnNumber() + "\"");
+		                out.print(",");
+		                
+		        out.print("\"" + "bookName" + "\":\""  + 
+		                        booktTile.getBookName() + "\"");
+		                        out.print(",");
 
+		        out.print("\"" + "author" + "\":\""  + 
+		                         booktTile.getAuthor()+ "\"");
+		                         out.print(",");
+		                
+		        out.print("\"" + "publication" + "\":\""  + 
+		                          booktTile.getPublication()+ "\"");
+		                          out.print(",");
+		                         
+		        out.print("\"" + "bindingType" + "\":\""  + 
+		                booktTile.getBindingType()+ "\"");
+		                out.print(",");           
+		        
+		                ArrayList<String> tags=booktTile.getTags();
+		                Iterator<String> tagIterator=tags.iterator();
+		                StringBuffer sb=new StringBuffer();
+		                 
+		                while(tagIterator.hasNext())
+		                {
+		                	
+		                	sb.append(tagIterator.next()+" ");
+		                }
+		        out.print("\"" + "tags" + "\":\""  + 
+		                        sb.toString()+ "\"");
+		                        out.print(",");           
+		                
+		         out.print("\"" + "noOfPages" + "\":\""  + 
+		                                booktTile.getNoOfPages()+ "\"");
+		                                out.print(",");         
+		       
+		          out.print("\"" + "language" + "\":\""  + 
+		                                        booktTile.getLanguage()+ "\"");
+		                                        out.print(",");        
+		           
+		          out.print("\"" + "location" + "\":\""  + 
+		                                 booktTile.getLocation()+ "\"");
+		          
+		          
+		          List<Book> books=booktTile.getBooks();
+		          Iterator<Book> i=books.iterator();
+		          while(i.hasNext()){
+		          
+		        	  Book book=i.next();
+		          out.print("\"" + "books"+count + "\":\""  +"\"[\""+ 
+                          book.getBookID()+ "\""+","+"\""+book.getBorrowedBy()+","+"\""+book.getIssuedType()+"\"]\""+"\"");
+		          count++;
+		          }
+   
+		          //booktTile
+		                  
+		          
+		
+		
+		
 		/* Outer loop for each row. */
 		//while(true)
 		//{               
 			/* Starting of row of an array */
-			out.print("{");
+			//out.print("{");
 					/*  Inner loop for all columns */           
 		    //for(int i=1;i<=14;i++)
 		    	//{
-			 out.print("\"" + "bookTitleID" + "\":\""  + 
+			 /*out.print("\"" + "bookTitleID" + "\":\""  + 
 				        booktTile.getBookTitleID() + "\"");
 				        out.print("},{");
 				        
@@ -98,15 +167,18 @@ public class SelectServlet extends HttpServlet {
 				                                        out.print("},{");        
 				           
 				          out.print("\"" + "location" + "\":\""  + 
-				                                                booktTile.getLocation()+ "\"");
+				                                 booktTile.getLocation()+ "\"");
+				          
+				          //booktTile
 				                  
+				          out.print("");
 				                                                
 				        //if(i<numberOfColumns)
 				        	//out.print(",");
 				       // }
-					/* Starting of row of an array */
+					/* Starting of row of an array 
 				    out.print("}");
-				    out.print("]");
+				    out.print("]");*/
 				    
 
 	}
