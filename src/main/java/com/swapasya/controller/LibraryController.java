@@ -64,13 +64,14 @@ public class LibraryController
 		if(search!=null && txt!=null){
 			switch(search)
 {
-case "BookTitle":
+case "Book Title":
 	bookTitles=bktitlerepo.findByBookTitleRegex(txt);
 	break;
 
-case "BookID":
-	
+case "Book ID":
+	 System.out.println(" before In Book ID case"+search);
 	 bookTitles=bktitlerepo.findByBookId(txt);
+	 System.out.println(" After In Book ID case");
 	 break;
 		
 case "Author":
@@ -79,10 +80,14 @@ case "Author":
 	break;
 		
 case "Publication":
-	bookTitles=bktitlerepo.findByPublicationRegex(txt);			
-		
+	System.out.println(" before In Book publication case"+search);
+	bookTitles=bktitlerepo.findByPublicationRegex(txt);	
+	System.out.println(" after In Book publication case"+search);
+	break;
+	
 case "Tag":
-	bookTitles=bktitlerepo.findByTag(txt);		
+	bookTitles=bktitlerepo.findByTag(txt);
+	break;
 	}
 		}
 		model.addObject("bookTitles", bookTitles);
