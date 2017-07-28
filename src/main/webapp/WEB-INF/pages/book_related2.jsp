@@ -605,18 +605,18 @@
 
 
 																	<tbody>
-																	<%!int i=0; %>
+						<!-- 											<%!int i=0; %>
 																<ng-container *ngFor="let data of tableData; let i = index">
 																
      															 <ng-container *ngFor="let book of data.book<%=i%>; let j = index">
     																<tr>
     															    <td>{{book}}</td>
-    															    </tr>
-    															    <%i++; %>
+    															    </tr> -->
+    															    <%--<%i++; 
   																    </ng-container>
   																    
     																</ng-container>
-																	
+																	--%>
 																	
 																	<!-- 	<tr>
 																			<td>Tiger Nixon</td>
