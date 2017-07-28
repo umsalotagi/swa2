@@ -16,6 +16,7 @@ import com.swapasya.repo.BookTitleRepositoryMongoDB;
 public class MyClass {
 
 	public static void main(String[] args) {
+		
 		MongoOperations op=DBConnect.getConnection();
 		BookTitleRepositoryMongoDB mdb=new BookTitleRepositoryMongoDB(op);
 		
