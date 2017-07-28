@@ -48,28 +48,28 @@ public class SelectServlet extends HttpServlet {
 		
 		out.print("\"" + "bookTitleID" + "\":\""  + 
 		        booktTile.getBookTitleID() + "\"");
-		        out.print(",");
+		        out.print("},{");
 		        
 		        
 		        out.print("\"" + "isbnNumber" + "\":\""  + 
 		                booktTile.getIsbnNumber() + "\"");
-		                out.print(",");
+		                out.print("},{");
 		                
 		        out.print("\"" + "bookName" + "\":\""  + 
 		                        booktTile.getBookName() + "\"");
-		                        out.print(",");
+		                        out.print("},{");
 
 		        out.print("\"" + "author" + "\":\""  + 
 		                         booktTile.getAuthor()+ "\"");
-		                         out.print(",");
+		                         out.print("},{");
 		                
 		        out.print("\"" + "publication" + "\":\""  + 
 		                          booktTile.getPublication()+ "\"");
-		                          out.print(",");
+		                          out.print("},{");
 		                         
 		        out.print("\"" + "bindingType" + "\":\""  + 
 		                booktTile.getBindingType()+ "\"");
-		                out.print(",");           
+		                out.print("},{");           
 		        
 		                ArrayList<String> tags=booktTile.getTags();
 		                Iterator<String> tagIterator=tags.iterator();
@@ -82,21 +82,21 @@ public class SelectServlet extends HttpServlet {
 		                }
 		        out.print("\"" + "tags" + "\":\""  + 
 		                        sb.toString()+ "\"");
-		                        out.print(",");           
+		                        out.print("},{");           
 		                
 		         out.print("\"" + "noOfPages" + "\":\""  + 
 		                                booktTile.getNoOfPages()+ "\"");
-		                                out.print(",");         
+		                                out.print("},{");         
 		       
 		          out.print("\"" + "language" + "\":\""  + 
 		                                        booktTile.getLanguage()+ "\"");
-		                                        out.print(",");        
+		                                        out.print("},{");        
 		           
 		          out.print("\"" + "location" + "\":\""  + 
 		                                 booktTile.getLocation()+ "\"");
 		          
 		          
-		          List<Book> books=booktTile.getBooks();
+		          /*List<Book> books=booktTile.getBooks();
 		          Iterator<Book> i=books.iterator();
 		          while(i.hasNext()){
 		          
@@ -104,7 +104,7 @@ public class SelectServlet extends HttpServlet {
 		          out.print("\"" + "books"+count + "\":\""  +"\"[\""+ 
                           book.getBookID()+ "\""+","+"\""+book.getBorrowedBy()+","+"\""+book.getIssuedType()+"\"]\""+"\"");
 		          count++;
-		          }
+		          }*/
    
 		          //booktTile
 		                  
@@ -176,9 +176,9 @@ public class SelectServlet extends HttpServlet {
 				        //if(i<numberOfColumns)
 				        	//out.print(",");
 				       // }
-					/* Starting of row of an array 
+					/* Starting of row of an array*/ 
 				    out.print("}");
-				    out.print("]");*/
+				    out.print("]");
 				    
 
 	}

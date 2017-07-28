@@ -16,17 +16,20 @@ import com.swapasya.repo.BookTitleRepositoryMongoDB;
 public class MyClass {
 
 	public static void main(String[] args) {
+		
 		MongoOperations op=DBConnect.getConnection();
 		BookTitleRepositoryMongoDB mdb=new BookTitleRepositoryMongoDB(op);
 		
 		ArrayList<String> tags=new ArrayList<>();
-		tags.add(".net");
-		tags.add("ASP");
+		tags.add("java");
+		tags.add("core java");
+		tags.add("advanced java");
+		
 		
 		
 		List<Book> books=new ArrayList<>();
-		Book book=new Book("b001",new Date(12, 10, 2016), 800, "xx");
-		Book book1=new Book("b002",new Date(11, 10, 2016), 800, "xx");
+		Book book=new Book("b005",new Date(12, 10, 2016), 800, "xx");
+		Book book1=new Book("b006",new Date(11, 10, 2016), 800, "xx");
 		books.add(book);
 		books.add(book1);
 		
@@ -35,7 +38,7 @@ public class MyClass {
 		List<AssignList> assignList=new  ArrayList<>();
 		
 		
-	BookTitle bkTitle=new BookTitle(".Net", "1232u348", "Pro ASP.NET Core MVC", "Adam Freeman","XXX", "Folded",tags , 2000, "English","1 row 2nd column","/resources/images/black_book.jpg");
+	BookTitle bkTitle=new BookTitle("C", "1234723e", null, null,"XXX", "Folded",tags , 2000, "English","1 row 2nd column","/resources/images/c.jpg");
 		
 		bkTitle.setBooks(books);
 		bkTitle.setWaitList(waitList);
