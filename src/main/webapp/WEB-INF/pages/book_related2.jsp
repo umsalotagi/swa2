@@ -388,10 +388,17 @@
 																
 																<tr>
 																	<td><a ng-href="#" ng-click="select(BookTitleId='<%=bkTitle.getBookTitleID()%>')"><%=bkTitle.getBookTitleID() %></a></td>
+																	<%if(bkTitle.getImgPath()==null) {%>
+																	<td><img src='<c:url value='a.jpg'/>' width="50" height="50"/></td>
+																	<td><%=bkTitle.getBookName()%></td>
+																	<td><%=bkTitle.getAuthor()%></td>
+																	<td><%=bkTitle.getPublication()%></td>
+																	<%} else{%>
 																	<td><img src='<c:url value='<%=bkTitle.getImgPath()%>'/>' width="50" height="50"/></td>
 																	<td><%=bkTitle.getBookName()%></td>
 																	<td><%=bkTitle.getAuthor()%></td>
 																	<td><%=bkTitle.getPublication()%></td>
+																	<%} %>
 																</tr>
 																<%} 
 																}%>	

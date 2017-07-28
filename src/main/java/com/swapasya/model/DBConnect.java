@@ -18,7 +18,6 @@ public static MongoOperations getConnection()
 	
 	op = (MongoOperations) ctx.getBean("mongoTemplate");
 	System.out.println("got bean");
-	
 return op;
 		
 	}
