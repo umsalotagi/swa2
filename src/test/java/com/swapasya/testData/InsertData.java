@@ -12,6 +12,9 @@ public class InsertData {
 	public void createperson() {
 		
 		
+		
+		
+		
 		createPerson("161117", "Sagar", "Gag", "Teacher", "Shivann col, nagar", "757575757");
 		createPerson("161118", "AMit", "Paul", "Teacher", "Jaature , solapur", "655555555");
 		createPerson("161119", "Rahul", "Kana", "Student", "bharat nagar, solapur", "77777777777");
