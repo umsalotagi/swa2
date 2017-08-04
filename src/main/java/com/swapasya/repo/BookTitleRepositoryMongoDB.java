@@ -154,7 +154,7 @@ public class BookTitleRepositoryMongoDB implements BookTitleRepository {
 
 	@Override
 	public List<BookTitle> findByTag(String tag) {
-		Query query = Query.query(Criteria.where("tags").is(tag));
+		Query query = Query.query(Criteria.where("tags").is(tag.toLowerCase()));
 		List<BookTitle> listOfBkTitles=operations.find(query, BookTitle.class);
 		System.out.println("returning by tags");
 		return listOfBkTitles;
