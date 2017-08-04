@@ -34,9 +34,8 @@ import com.swapasya.domains.Book;
 import com.swapasya.domains.BookTitle;
 import com.swapasya.domains.WaitList;
 
-
 //   http://joegornick.com/2012/10/25/mongodb-unique-indexes-on-single-embedded-documents/
-	
+
 public class BookTitleRepositoryMongoDB implements BookTitleRepository {
 
 	private final MongoOperations operations;
@@ -86,7 +85,7 @@ public class BookTitleRepositoryMongoDB implements BookTitleRepository {
 
 	@Override
 	public boolean exists(String id) {
-		if (findOne(id)!=null)
+		if (findOne(id) != null)
 			return true;
 		else
 			return false;
@@ -137,25 +136,21 @@ public class BookTitleRepositoryMongoDB implements BookTitleRepository {
 		}
 		return list;
 	}
-	
 
 	@Override
 	public List<BookTitle> findByBookTitle(String bookTitle) {
-		Query query = Query.query(Criteria.where("bookName").is(bookTitle));
+		Query query = Query.query(Criteria.where("bookName")
+				.regex(Pattern.compile(bookTitle, Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE)));
+		//Query query = Query.query(Criteria.where("bookName").is(bookTitle));
 		return operations.find(query, BookTitle.class);
 
 	}
-	
-	public List<BookTitle> findByBookTitleRegex(String bookTitle) {
-		Query query = Query.query(Criteria.where("bookName").regex(Pattern.compile(bookTitle, Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE)));
-		return operations.find(query, BookTitle.class);
 
-	}
 
 	@Override
 	public List<BookTitle> findByTag(String tag) {
 		Query query = Query.query(Criteria.where("tags").is(tag.toLowerCase()));
-		List<BookTitle> listOfBkTitles=operations.find(query, BookTitle.class);
+		List<BookTitle> listOfBkTitles = operations.find(query, BookTitle.class);
 		System.out.println("returning by tags");
 		return listOfBkTitles;
 
@@ -163,12 +158,8 @@ public class BookTitleRepositoryMongoDB implements BookTitleRepository {
 
 	@Override
 	public List<BookTitle> findByAuthor(String author) {
-		Query query = Query.query(Criteria.where("author").is(author)); 
-		return operations.find(query, BookTitle.class);
-	}
-	
-	public List<BookTitle> findByAuthorRegex (String author) {
-		Query query = Query.query(Criteria.where("author").regex(Pattern.compile(author, Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE))); 
+		Query query = Query.query(Criteria.where("author")
+				.regex(Pattern.compile(author, Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE)));
 		return operations.find(query, BookTitle.class);
 	}
 
@@ -248,14 +239,16 @@ public class BookTitleRepositoryMongoDB implements BookTitleRepository {
 
 	@Override
 	public List<BookTitle> findByPublication(String publication) {
-		Query query = Query.query(Criteria.where("publication").is(publication));
+		Query query = Query.query(Criteria.where("publication").regex( Pattern.compile(publication, Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE)));
 		return operations.find(query, BookTitle.class);
 
 	}
-	
-	// Pattern.compile(input_location, Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE)
-	public List<BookTitle> findByPublicationRegex (String publication) {
-		Query query = Query.query(Criteria.where("publication").regex( Pattern.compile(publication, Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE)));
+
+	// Pattern.compile(input_location, Pattern.CASE_INSENSITIVE |
+	// Pattern.UNICODE_CASE)
+	public List<BookTitle> findByPublicationRegex(String publication) {
+		Query query = Query.query(Criteria.where("publication")
+				.regex(Pattern.compile(publication, Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE)));
 		return operations.find(query, BookTitle.class);
 
 	}
@@ -320,7 +313,7 @@ public class BookTitleRepositoryMongoDB implements BookTitleRepository {
 		Iterator<WaitList> i1 = waitList.iterator();
 		while (i1.hasNext()) {
 			WaitList w = i1.next();
-		//	waitLs.put("id", w.getId());
+			// waitLs.put("id", w.getId());
 			waitLs.put("timestamp", w.getTimestamp());
 			bkTitle.put("waitList", waitLs);
 		}
@@ -340,32 +333,42 @@ public class BookTitleRepositoryMongoDB implements BookTitleRepository {
 		coll.insert(bkTitle);
 
 	}
-	
-	
-	
-	
-	// Need to decide best position of these function
-	// whether in book class or in this class.
-	
-	
-	public void addBook (String bookTitleID , Book b) {
-		
+
+	// // Need to decide best position of these function
+	// // whether in book class or in this class.
+	//
+	//
+	// public void addBook (String bookTitleID , Book b) {
+	//
+	// }
+	//
+	// public void removeBook (String bookTitleID , Book b) {
+	//
+	// }
+	//
+	// public void addToWaitList (String bookTitleID , String personID) {
+	//
+	// }
+	//
+	// public void removeFromWaitList (String bookTitleID , String personID) {
+	//
+	// }
+
+	public List<BookTitle> findByBookTitleAndAuthour(String bookName, String authour) {
+		Query query = new Query();
+		query.addCriteria(Criteria.where("bookName")
+				.regex(Pattern.compile(bookName, Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE)));
+		// query.addCriteria(Criteria.where("publication").regex(Pattern.compile(publication,
+		// Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE)));
+		// Aggregation
+		// AggregateOperation<T>
+		// if both are sma ethen
+		query.addCriteria(Criteria.where("authour")
+				.regex(Pattern.compile(authour, Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE)));
+		// query.fields().include("authour");
+		// query.with(new Sort(Sort.Direction.DESC, "count"));
+		return operations.find(query, BookTitle.class);
+
 	}
-	
-	public void removeBook (String bookTitleID , Book b) {
-			
-	}
-	
-	public void addToWaitList (String bookTitleID , String personID) {
-		
-	}
-	
-	public void removeFromWaitList (String bookTitleID , String personID) {
-		
-	}
-	
-	
-	
-	
 
 }
