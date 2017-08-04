@@ -1,12 +1,10 @@
-<%@page import="java.util.ArrayList"%>
-<%@page import="java.util.Iterator"%>
-<%@page import="com.swapasya.domains.BookTitle"%>
-<%@page import="java.util.List"%>
+<%@page import="com.swapasya.domains.Person"%>
+<%@page import="com.swapasya.model.DBConnect"%>
+<%@page import="com.swapasya.repo.PersonRepositoryMongoDB,java.util.*"%>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
-    pageEncoding="ISO-8859-1" isELIgnored="false"%>
-    
+    pageEncoding="ISO-8859-1" errorPage="error.jsp"%>
+
 <!DOCTYPE html>
-<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <html lang="en">
 
 <head>
@@ -19,11 +17,8 @@
 <title>Gentelella Alela! |</title>
 
 <!-- Bootstrap -->
-<script type="text/javascript" src="<c:url value="/resources/js/moment/angular.min.js"/>"></script>
-
-<script type="text/javascript" src="<c:url value="/resources/js/moment/app.js"/>"></script>
-
-<link href="<c:url value="/resources/vendors/bootstrap/dist/css/bootstrap.min.css"/>" rel="stylesheet">
+<link href="<c:url value="/resources/vendors/bootstrap/dist/css/bootstrap.min.css"/>"
+	rel="stylesheet">
 <!-- Font Awesome -->
 <link href="<c:url value="/resources/vendors/font-awesome/css/font-awesome.min.css"/>"
 	rel="stylesheet">
@@ -45,7 +40,7 @@
 <link href="<c:url value="/resources/build/css/custom.min.css"/>" rel="stylesheet">
 </head>
 
-<body class="nav-md"  ng-app="myapp" ng-controller="myctrl">
+<body class="nav-md">
 	<div class="container body">
 		<div class="main_container">
 			<div class="col-md-3 left_col">
@@ -60,7 +55,7 @@
 					<!-- menu profile quick info -->
 					<div class="profile clearfix">
 						<div class="profile_pic">
-							<img src="<c:url value="/resources/images/img.jpg"/>" alt="..."
+							<img src="images/img.jpg" alt="..."
 								class="img-circle profile_img">
 						</div>
 						<div class="profile_info">
@@ -270,10 +265,10 @@
 					<ul id="myTab" class="nav nav-tabs bar_tabs" role="tablist">
 						<li role="presentation" class="active"><a
 							href="#tab_content1" id="home-tab" role="tab" data-toggle="tab"
-							aria-expanded="true">Search Book</a></li>
+							aria-expanded="true">Search User</a></li>
 						<li role="presentation" class=""><a href="#tab_content2"
 							role="tab" id="profile-tab" data-toggle="tab"
-							aria-expanded="false">Add Book Title</a></li>
+							aria-expanded="false">Add User</a></li>
 
 					</ul>
 					<div id="myTabContent" class="tab-content">
@@ -291,7 +286,7 @@
 									<div class="x_panel">
 										<div class="x_title">
 											<h2>
-												Search Books <small>search books</small>
+												Search User <small>search users</small>
 											</h2>
 
 											<div class="clearfix"></div>
@@ -299,7 +294,7 @@
 										<div class="x_content">
 											<br />
 											<form id="demo-form2" data-parsley-validate
-												class="form-horizontal form-label-left" action="search_book.html">
+												class="form-horizontal form-label-left">
 
 
 
@@ -307,25 +302,22 @@
 												<div class="form-group">
 
 													<div class="col-md-3 col-sm-3 col-xs-12">
-														<select class="form-control" name="search">
-															<option>Book ID</option>
-															<option>Book Title</option>
-															<option>Tag</option>
-															<option>Author</option>
-															<option>Publication</option>
+														<select class="form-control">
+															<option>Person ID</option>
+															<option>Person Name</option>
 														</select>
 													</div>
 
 													<div class="col-md-9 col-sm-9 col-xs-12">
 														<input type="text" id="first-name" required="required"
-															class="form-control col-md-7 col-xs-12" name="txt">
+															class="form-control col-md-7 col-xs-12">
 													</div>
 												</div>
 
 												<div class="form-group">
 													<div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
 														<button class="btn btn-primary" type="button">Cancel</button>
-														<input type="submit" class="btn btn-success" value="Search"/>
+														<button type="submit" class="btn btn-success">Submit</button>
 													</div>
 												</div>
 
@@ -356,74 +348,61 @@
 															class="table table-striped table-bordered">
 															<thead>
 																<tr>
-																	<th>Title ID</th>
-																	<th>Image</th>
-																	<th>Title</th>
-																	<th>Author</th>
-																	<th>Publication</th>
-																	
+																	<th>Person ID</th>
+																	<th>Person Name</th>
+																	<th>Role</th>
+																	<th>Class</th>
+																	<th>Address</th>
+
 																</tr>
 															</thead>
-																			
-												
-															<tbody>
-																			<%!List<BookTitle> bookTitles=new ArrayList<BookTitle>();
-																				BookTitle bkTitle=null;
-																			 
-																			%>
-																			<%
-																			
-																			bookTitles=(List<BookTitle>)request.getAttribute("bookTitles");
-																			if(bookTitles!=null){
-																				System.out.println("Booktitles are not null");
-																				bkTitle=new BookTitle();
-																			Iterator<BookTitle> i=bookTitles.iterator();
-																			System.out.println("before iterator");
-																			while(i.hasNext()){
-																				System.out.println("inside iterator");	
-																				bkTitle=i.next();
-																			System.out.println(bkTitle.getBookTitleID());
-																			
-														//					pageContext.setAttribute("bookTitles", bookTitles);
-																			
-																			%>
 															
-																 
+															
+															<tbody>
 																
+																<%! List<Person> users; 
+																//	List<Object> justForAuth;
+																
+																%>
+																<%
+																
+																String search=request.getParameter("search");
+																String txt=request.getParameter("txt");
+																
+																
+																if(search!=null && txt!=null){
+																	PersonRepositoryMongoDB personRepo=new PersonRepositoryMongoDB(DBConnect.getConnection());
+														if("Person ID".equals(search))
+														{
+															users = new ArrayList <Person> ();
+															users.add(personRepo.findOne(txt));	
+														}
+														else if("Person Name".equals(search))
+														{
+															users=personRepo.findByName(txt);	
+														}
+														
+																
+																%>
+																
+																<% Iterator<Person> i=users.iterator(); 
+																
+																while(i.hasNext()){
+																	Person user=i.next();
+																%>
 																<tr>
-																	<td><a ng-href="#" ng-click="select(BookTitleId='<%=bkTitle.getBookTitleID()%>')"><%=bkTitle.getBookTitleID() %></a></td>
-																	<%if(bkTitle.getImgPath()==null) {%>
-																	<td><img src='<c:url value='/resources/images/picture.jpg'/>' width="50" height="50"/></td>
-																	<td><%=bkTitle.getBookName()%></td>
-																	<td><%=bkTitle.getAuthor()%></td>
-																	<td><%=bkTitle.getPublication()%></td>
-																	<%} else{%>
-																	<td><img src='<c:url value='<%=bkTitle.getImgPath()%>'/>' width="50" height="50"/></td>
-																	<td><%=bkTitle.getBookName()%></td>
-																	<td><%=bkTitle.getAuthor()%></td>
-																	<td><%=bkTitle.getPublication()%></td>
-																	<%} %>
-																</tr>
-																<%} 
-																}%>	
+																	<%--<td><%=o %></td> --%>
+																	
+																	
+																	<td><a ng-href="#" ng-click="select(PersonId='<%=user.getPersonID()%>')"><%=user.getPersonID()%> </a></td>
+																	<td><%=user.getPersonName()%></td>
+																	<td><%=user.getRole()%></td>
+																	<td><%=user.getDegree() + " " + user.getBranch() + " " + user.getDivision() + " " + user.getRollNo() %></td>
+																	<td><%=user.getPermanentAddress().getCity()%></td> 
+															</tr>
+																<%}%>
 																
-																
-																
-																
-																<%--<tr>
-																	<td><a href="form_editbook.html" >Garrett Winters</a></td>
-																	<td><a href="form_editbook.html" >Accountant</a></td>
-																	<td><a href="form_editbook.html" >Tokyo</a></td>
-																	<td><a href="form_editbook.html" >63</a></td>
-																	<td><a href="form_editboo	k.html" >2011/07/25</a></td>
-																</tr>
-																<tr>
-																	<td><a href="form_editbook.html" >Ashton Cox</a></td>
-																	<td><a href="form_editbook.html" >Junior Technical Author</a></td>
-																	<td><a href="form_editbook.html" >San Francisco</a></td>
-																	<td><a href="form_editbook.html" >66</a></td>
-																	<td><a href="form_editbook.html" >2009/01/12</a></td>
-																</tr> --%>
+																<% }%>
 															</tbody>
 														</table>
 
@@ -444,18 +423,13 @@
 										<div class="x_panel" id="redirected1">
 											<div class="x_title">
 												<h2>
-													<i class="fa fa-align-left"></i> Book Title Details <small></small>
+													<i class="fa fa-align-left"></i> Person Details <small></small>
 												</h2>
 												<!--      <button class="btn btn-app">Edit</button>-->
 												<div class="pull-right">
-												
-															${msg}
-												
-												<% if(bkTitle!=null){%>
-													<a class="btn btn-round btn-info" href="form_editbook.html?bookTitleID=<%=bkTitle.getBookTitleID()%>">
+													<a class="btn btn-round btn-info" href="form_edituser.html">
 														<i class="fa fa-edit"> </i> Edit
 													</a>
-													<%}%>
 												</div>
 												<div class="clearfix"></div>
 											</div>
@@ -468,27 +442,29 @@
 													<div class="panel ">
 
 														<div class="col-sm-9 invoice-col">
-														<table>
- 														<tr ng-repeat="data in tableData">
-														<td ng-repeat="(key,value) in data">{{key}}:{{value}}</td>
-														</tr>
-														</table>
+															<b>Person ID: </b> B13455 <br> <b>Name: </b> 4F3S8J
+															<br> <b>Role: </b> 2/22/2014 <br> <b>Degree:
+															</b> 968-34567 <br> <b>Branch: </b> 968-34567 <br>
+															<b>Class: </b> 968-34567 <br> <b>Mobile: </b>
+															968-34567 <br> <b>E-mail: </b> 968-34567 <br> <b>Admission
+																Date: </b> 968-34567 <br> <b>Parent Name: </b>
+															968-34567 <br> <b>Parent Contact: </b> 968-34567 <br>
+															<b>Current Address: </b> 968-34567 <br> <b>Permanent
+																Address: </b> 968-34567 <br> <br>
 														</div>
-														
+
 														<div class="col-md-3 col-sm-3 col-xs-12 profile_right">
-								                      	<div class="profile_img">
-								                        <div id="crop-avatar">
-								                          <!-- Current avatar -->
-								                          <% if(bkTitle!=null){
-								                          System.out.println("In the img if");
-								                          %>
-								                          <img class="img-responsive avatar-view" src='<c:url value='<%=bkTitle.getImgPath()%>'/>' alt="Avatar" title="Change the avatar">
-								                          <%} %>
-								                        </div>
-								                      	</div>
-								                      	</div>
-								                      	
-								                      	<div class="clearfix"></div>
+															<div class="profile_img">
+																<div id="crop-avatar">
+																	<!-- Current avatar -->
+																	<img class="img-responsive avatar-view"
+																		src="<c:url value="/resources/images/picture.jpg"/>" alt="Avatar"
+																		title="Change the avatar">
+																</div>
+															</div>
+														</div>
+
+														<div class="clearfix"></div>
 
 
 													</div>
@@ -498,18 +474,19 @@
 															id="headingThree" data-toggle="collapse"
 															href="#collapseThree" aria-expanded="false"
 															aria-controls="collapseThree">
-															<h4 class="panel-title">Wait List</h4>
+															<h4 class="panel-title">Wait Listed</h4>
 														</a>
 														<div id="collapseThree" class="panel-collapse collapse"
 															role="tabpanel" aria-labelledby="headingThree">
-														<iframe src="hello.jsp" class="panel-body" name="if2">
+															<div class="panel-body">
 
-														<!-- 		<table id="" class="table table-striped table-bordered">
+																<table id="" class="table table-striped table-bordered">
 																	<thead>
 																		<tr>
 																			<th>#</th>
-																			<th>User ID</th>
-																			<th>Name</th>
+																			<th>Book ID</th>
+																			<th>Book Title</th>
+																			<th>Author</th>
 																		</tr>
 																	</thead>
 
@@ -519,21 +496,24 @@
 																			<td>1</td>
 																			<td>System Architect</td>
 																			<td>Edinburgh</td>
+																			<td>System Architect</td>
 																		</tr>
 																		<tr>
 																			<td>2</td>
 																			<td>Accountant</td>
 																			<td>Tokyo</td>
+																			<td>System Architect</td>
 																		</tr>
 																		<tr>
 																			<td>3</td>
 																			<td>Junior Technical Author</td>
 																			<td>San Francisco</td>
+																			<td>System Architect</td>
 																		</tr>
 																	</tbody>
 																</table>
- -->
-	</iframe>
+
+															</div>
 														</div>
 													</div>
 
@@ -543,7 +523,7 @@
 															id="headingThree1" data-toggle="collapse"
 															href="#collapseThree1" aria-expanded="false"
 															aria-controls="collapseThree">
-															<h4 class="panel-title">Assign List</h4>
+															<h4 class="panel-title">Assigned</h4>
 														</a>
 														<div id="collapseThree1" class="panel-collapse collapse"
 															role="tabpanel" aria-labelledby="headingThree">
@@ -553,8 +533,9 @@
 																	<thead>
 																		<tr>
 																			<th>#</th>
-																			<th>User ID</th>
-																			<th>Name</th>
+																			<th>Book ID</th>
+																			<th>Book Title</th>
+																			<th>Time</th>
 																		</tr>
 																	</thead>
 
@@ -564,16 +545,19 @@
 																			<td>1</td>
 																			<td>System Architect</td>
 																			<td>Edinburgh</td>
+																			<td>Accountant</td>
 																		</tr>
 																		<tr>
 																			<td>2</td>
 																			<td>Accountant</td>
 																			<td>Tokyo</td>
+																			<td>Accountant</td>
 																		</tr>
 																		<tr>
 																			<td>3</td>
 																			<td>Junior Technical Author</td>
 																			<td>San Francisco</td>
+																			<td>Accountant</td>
 																		</tr>
 																	</tbody>
 																</table>
@@ -590,7 +574,7 @@
 															id="headingOne" data-toggle="collapse"
 															href="#collapseOne" aria-expanded="false"
 															aria-controls="collapseOne">
-															<h4 class="panel-title">Books Under Title</h4>
+															<h4 class="panel-title">Books In Possession</h4>
 														</a>
 														<div id="collapseOne" class="panel-collapse collapse in"
 															role="tabpanel" aria-labelledby="headingOne">
@@ -602,28 +586,19 @@
 																	<thead>
 																		<tr>
 																			<th>Book ID</th>
-																			<th>Borrowed By</th>
-																			<th>Issued Type</th>
+																			<th>Book Title</th>
+																			<th>Issue Date</th>
+																			<th>Issue Type</th>
+																			<th>Exp. Return</th>
 																		</tr>
 																	</thead>
 
 
 																	<tbody>
-						<!-- 											<%!int i=0; %>
-																<ng-container *ngFor="let data of tableData; let i = index">
-																
-     															 <ng-container *ngFor="let book of data.book<%=i%>; let j = index">
-    																<tr>
-    															    <td>{{book}}</td>
-    															    </tr> -->
-    															    <%--<%i++; 
-  																    </ng-container>
-  																    
-    																</ng-container>
-																	--%>
-																	
-																	<!-- 	<tr>
+																		<tr>
 																			<td>Tiger Nixon</td>
+																			<td>System Architect</td>
+																			<td>Edinburgh</td>
 																			<td>System Architect</td>
 																			<td>Edinburgh</td>
 																		</tr>
@@ -631,12 +606,16 @@
 																			<td>Garrett Winters</td>
 																			<td>Accountant</td>
 																			<td>Tokyo</td>
+																			<td>Accountant</td>
+																			<td>Edinburgh</td>
 																		</tr>
 																		<tr>
 																			<td>Ashton Cox</td>
 																			<td>Junior Technical Author</td>
 																			<td>San Francisco</td>
-																		</tr> -->
+																			<td>Junior Technical Author</td>
+																			<td>Edinburgh</td>
+																		</tr>
 																	</tbody>
 																</table>
 
@@ -666,139 +645,287 @@
 						</div>
 						<!--  tab panel first ended -->
 						<div class="clearfix"></div>
-						
+
 						<!--  Tab panel second -->
 						<div role="tabpanel" class="tab-pane fade" id="tab_content2"
 							aria-labelledby="profile-tab">
-							
-							
-							
-							
+
+
+
+
 							<div class="row">
 
 
 
-              <div class="col-md-12 col-xs-12">
-                <div class="x_panel">
-                  <div class="x_title">
-                    <h2> Add Book Title <small>add book title</small></h2>
-                    <ul class="nav navbar-right panel_toolbox">
-                      <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
-                      </li>
-                      <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-wrench"></i></a>
-                        <ul class="dropdown-menu" role="menu">
-                          <li><a href="#">Settings 1</a>
-                          </li>
-                          <li><a href="#">Settings 2</a>
-                          </li>
-                        </ul>
-                      </li>
-                      <li><a class="close-link"><i class="fa fa-close"></i></a>
-                      </li>
-                    </ul>
-                    <div class="clearfix"></div>
-                  </div>
-                  <div class="x_content">
-                    <br />
-                    <form class="form-horizontal form-label-left">
-						
-						<div class="form-group">
-                        <label class="control-label col-md-3 col-sm-3 col-xs-12">Book Title ID</label>
-                        <div class="col-md-9 col-sm-9 col-xs-12">
-                          <input type="text" class="form-control" placeholder="Default Input">
-                        </div>
-                      </div>
-                      <div class="form-group">
-                        <label class="control-label col-md-3 col-sm-3 col-xs-12">Book Title</label>
-                        <div class="col-md-9 col-sm-9 col-xs-12">
-                          <input type="text" class="form-control" placeholder="Default Input">
-                        </div>
-                      </div>
-                      <div class="form-group">
-                        <label class="control-label col-md-3 col-sm-3 col-xs-12">Author</label>
-                        <div class="col-md-9 col-sm-9 col-xs-12">
-                          <input type="text" class="form-control" placeholder="Default Input">
-                        </div>
-                      </div>
-                      <div class="form-group">
-                        <label class="control-label col-md-3 col-sm-3 col-xs-12">Publication</label>
-                        <div class="col-md-9 col-sm-9 col-xs-12">
-                          <input type="text" class="form-control" placeholder="Default Input">
-                        </div>
-                      </div>
-                      <div class="form-group">
-                        <label class="control-label col-md-3 col-sm-3 col-xs-12">ISBN Number</label>
-                        <div class="col-md-9 col-sm-9 col-xs-12">
-                          <input type="text" class="form-control" placeholder="Default Input">
-                        </div>
-                      </div>
-                      <div class="form-group">
-                        <label class="control-label col-md-3 col-sm-3 col-xs-12">Language</label>
-                        <div class="col-md-9 col-sm-9 col-xs-12">
-                          <input type="text" class="form-control" placeholder="Default Input">
-                        </div>
-                      </div>
-                      <div class="form-group">
-                        <label class="control-label col-md-3 col-sm-3 col-xs-12">Number of pages</label>
-                        <div class="col-md-9 col-sm-9 col-xs-12">
-                          <input type="text" class="form-control" placeholder="Default Input">
-                        </div>
-                      </div>
-                      <div class="form-group">
-                        <label class="control-label col-md-3 col-sm-3 col-xs-12">Location</label>
-                        <div class="col-md-9 col-sm-9 col-xs-12">
-                          <input type="text" class="form-control" placeholder="Default Input">
-                        </div>
-                      </div>
-                      <div class="form-group">
-                        <label class="control-label col-md-3 col-sm-3 col-xs-12">Binding Type</label>
-                        <div class="col-md-9 col-sm-9 col-xs-12">
-                          <input type="text" class="form-control" placeholder="Default Input">
-                        </div>
-                      </div>
-<!--                       <div class="form-group"> -->
-<!--                         <label class="control-label col-md-3 col-sm-3 col-xs-3">Purchase Date</label> -->
-<!--                         <div class="col-md-9 col-sm-9 col-xs-9"> -->
-<!--                           <input type="text" class="form-control" data-inputmask="'mask': '99/99/9999'"> -->
-<!--                           <span class="fa fa-user form-control-feedback right" aria-hidden="true"></span> -->
-<!--                         </div> -->
-<!--                       </div> -->
+								<div class="col-md-12 col-xs-12">
+									<div class="x_panel">
+										<div class="x_title">
+											<h2>
+												Add User <small>add user</small>
+											</h2>
+											<ul class="nav navbar-right panel_toolbox">
+												<li><a class="collapse-link"><i
+														class="fa fa-chevron-up"></i></a></li>
+												<li class="dropdown"><a href="#"
+													class="dropdown-toggle" data-toggle="dropdown"
+													role="button" aria-expanded="false"><i
+														class="fa fa-wrench"></i></a>
+													<ul class="dropdown-menu" role="menu">
+														<li><a href="#">Settings 1</a></li>
+														<li><a href="#">Settings 2</a></li>
+													</ul></li>
+												<li><a class="close-link"><i class="fa fa-close"></i></a>
+												</li>
+											</ul>
+											<div class="clearfix"></div>
+										</div>
+										<div class="x_content">
+											<br />
 
-                      <div class="control-group">
-                        <label class="control-label col-md-3 col-sm-3 col-xs-12">Input Tags</label>
-                        <div class="col-md-9 col-sm-9 col-xs-12">
-                          <input id="tags_1" type="text" class="tags form-control" />
-                          <div id="suggestions-container" style="position: relative; float: left; width: 250px; margin: 10px;"></div>
-                        </div>
-                      </div>
+											<form class="form-horizontal form-label-left" novalidate>
+
+												<!--                       <span class="section">Personal Info</span> -->
+
+												<div class="item form-group">
+													<label class="control-label col-md-3 col-sm-3 col-xs-12"
+														for="name">Person ID <span class="required">*</span>
+													</label>
+													<div class="col-md-6 col-sm-6 col-xs-12">
+														<input id="name" class="form-control col-md-7 col-xs-12"
+															data-validate-length-range="6" data-validate-words="2"
+															name="name" placeholder="first name e.g John"
+															required="required" type="text">
+													</div>
+												</div>
+												<div class="item form-group">
+													<label class="control-label col-md-3 col-sm-3 col-xs-12"
+														for="email">Email <span class="required">*</span>
+													</label>
+													<div class="col-md-6 col-sm-6 col-xs-12">
+														<input type="email" id="email" name="email"
+															required="required"
+															class="form-control col-md-7 col-xs-12">
+													</div>
+												</div>
+
+												<div class="item form-group">
+													<label class="control-label col-md-3 col-sm-3 col-xs-12"
+														for="telephone">Mobile No. </label>
+													<div class="col-md-6 col-sm-6 col-xs-12">
+														<input type="tel" id="telephone" name="phone"
+															data-validate-length-range="8,20"
+															class="form-control col-md-7 col-xs-12">
+													</div>
+												</div>
+
+												<div class="item form-group">
+													<label class="control-label col-md-3 col-sm-3 col-xs-12"
+														for="name">Role <span class="required">*</span>
+													</label>
+													<div class="col-md-6 col-sm-6 col-xs-12">
+														<input id="name" class="form-control col-md-7 col-xs-12"
+															data-validate-length-range="6" data-validate-words="2"
+															name="name" placeholder="e.g Teacher, Student"
+															required="required" type="text">
+													</div>
+												</div>
 
 
-                      <!-- <div class="ln_solid"></div> -->
-                      <div class="form-group">
-                        <div class="col-md-9 col-sm-9 col-xs-12 col-md-offset-3">
-                          <button type="button" class="btn btn-primary">Cancel</button>
-                          <button type="reset" class="btn btn-primary">Reset</button>
-                          <button type="submit" class="btn btn-success">Submit</button>
-                        </div>
-                      </div>
-
-                    </form>
-                  </div>
-                </div>
-              </div>
+												<div class="ln_solid"></div>
+												<div class="form-group">
+													<div class="col-md-6 col-md-offset-3">
+														<button type="submit" class="btn btn-primary">Cancel</button>
+														<button id="send" type="submit" class="btn btn-success">Submit</button>
+													</div>
+												</div>
+											</form>
 
 
-              
-            </div>
-							
-							
-							
-							
-							
-							
-							
-							
+										</div>
+									</div>
+								</div>
+
+
+
+
+
+								<div class="clearfix"></div>
+
+								<div class="">
+
+									<div class="x_panel">
+										<div class="x_title">
+											<h2>
+												Search UnValidated User <small>search unvalidated
+													users</small>
+											</h2>
+
+											<div class="clearfix"></div>
+										</div>
+										<div class="x_content">
+											<br />
+											<form id="demo-form2" data-parsley-validate
+												class="form-horizontal form-label-left">
+
+
+
+
+												<div class="form-group">
+
+													<div class="col-md-3 col-sm-3 col-xs-12">
+														<select class="form-control">
+															<option>Person ID</option>
+															<option>Person Name</option>
+														</select>
+													</div>
+
+													<div class="col-md-9 col-sm-9 col-xs-12">
+														<input type="text" id="first-name" required="required"
+															class="form-control col-md-7 col-xs-12">
+													</div>
+												</div>
+
+												<div class="form-group">
+													<div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
+														<button class="btn btn-primary" type="button">Cancel</button>
+														<button type="submit" class="btn btn-success">Submit</button>
+													</div>
+												</div>
+
+											</form>
+										</div>
+									</div>
+
+
+
+									<div class="col-md-6 col-sm-6 col-xs-12">
+										<div class="x_panel">
+											<div class="x_title">
+												<h2>
+													<i class="fa fa-align-left"></i> Search Results <small></small>
+												</h2>
+												<!--tool box removed -->
+												<div class="clearfix"></div>
+											</div>
+											<div class="x_content">
+
+													<div class="panel">
+													<div class="panel-body">
+
+														<table id="datatable-checkbox"
+															class="table table-striped table-bordered">
+															<thead>
+																<tr>
+																	<th>Person ID</th>
+																	<th>Person Name</th>
+																	<th>Roll No.</th>
+																	<th>Class</th>
+																	<th>Address</th>
+
+																</tr>
+															</thead>
+
+															<tbody>
+																<tr>
+																	<td><a href="form_editbook.html">Tiger Nixon
+																	</a></td>
+																	<td><a href="form_editbook.html">System
+																			Architect</a></td>
+																	<td><a href="form_editbook.html">Edinburgh</a></td>
+																	<td><a href="form_editbook.html">61</a></td>
+																	<td><a href="form_editbook.html">2011/04/25</a></td>
+																</tr>
+																<tr>
+																	<td><a href="form_editbook.html">Garrett
+																			Winters</a></td>
+																	<td><a href="form_editbook.html">Accountant</a></td>
+																	<td><a href="form_editbook.html">Tokyo</a></td>
+																	<td><a href="form_editbook.html">63</a></td>
+																	<td><a href="form_editbook.html">2011/07/25</a></td>
+																</tr>
+																<tr>
+																	<td><a href="form_editbook.html">Ashton Cox</a></td>
+																	<td><a href="form_editbook.html">Junior
+																			Technical Author</a></td>
+																	<td><a href="form_editbook.html">San
+																			Francisco</a></td>
+																	<td><a href="form_editbook.html">66</a></td>
+																	<td><a href="form_editbook.html">2009/01/12</a></td>
+																</tr>
+															</tbody>
+														</table>
+
+
+													</div>
+													</div>
+													<div class="clearfix"></div>
+												</div>
+											</div>
+
+									</div>
+
+
+
+									<div class="col-md-6 col-sm-6 col-xs-12">
+										<div class="x_panel" id="redirected1">
+											<div class="x_title">
+												<h2>
+													<i class="fa fa-align-left"></i> Person Details <small></small>
+												</h2>
+												<!--      <button class="btn btn-app">Edit</button>-->
+												<div class="pull-right">
+													<a class="btn btn-round btn-info"> <i
+														class="fa fa-edit"> </i> Validate User
+													</a>
+												</div>
+												<div class="clearfix"></div>
+											</div>
+											<div class="x_content">
+
+													<div class="panel ">
+
+														<div class="col-sm-9 invoice-col">
+															<b>Person ID: </b> B13455 <br> <b>Name: </b> 4F3S8J
+															<br> <b>Role: </b> 2/22/2014 <br> <b>Degree:
+															</b> 968-34567 <br> <b>Branch: </b> 968-34567 <br>
+															<b>Class: </b> 968-34567 <br> <b>Mobile: </b>
+															968-34567 <br> <b>E-mail: </b> 968-34567 <br> <b>Admission
+																Date: </b> 968-34567 <br> <b>Parent Name: </b>
+															968-34567 <br> <b>Parent Contact: </b> 968-34567 <br>
+															<b>Current Address: </b> 968-34567 <br> <b>Permanent
+																Address: </b> 968-34567 <br> <br>
+														</div>
+
+														<div class="col-md-3 col-sm-3 col-xs-12 profile_right">
+															<div class="profile_img">
+																<div id="crop-avatar">
+																	<!-- Current avatar -->
+																	<img class="img-responsive avatar-view"
+																		src="<c:url value="/resources/images/picture.jpg"/>" alt="Avatar"
+																		title="Change the avatar">
+																</div>
+															</div>
+														</div>
+
+														<div class="clearfix"></div>
+
+
+													</div>
+												</div>
+										</div>
+									</div>
+								</div>
+
+
+							</div>
+
+
+
+
+
+
+
+
 						</div>
 
 					</div>
@@ -840,6 +967,7 @@
 	<script src="<c:url value="/resources/vendors/bootstrap/dist/js/bootstrap.min.js"/>"></script>
 	<!-- FastClick -->
 	<script src="<c:url value="/resources/vendors/fastclick/lib/fastclick.js"/>"></script>
+	
 	<!-- NProgress -->
 	<script src="<c:url value="/resources/vendors/nprogress/nprogress.js"/>"></script>
 	<!-- bootstrap-progressbar -->
@@ -850,10 +978,18 @@
 	<!-- PNotify -->
 	<script src="<c:url value="/resources/vendors/pnotify/dist/pnotify.js"/>"></script>
 	<script src="<c:url value="/resources/vendors/pnotify/dist/pnotify.buttons.js"/>"></script>
-	<script src="<c:url value="/resources/vendors/pnotify/dist/pnotify.nonblock.js"/>"></script>
 	
+	<script src="<c:url value="/resources/vendors/pnotify/dist/pnotify.nonblock.js"/>"></script>
+
 	<!-- jQuery Tags Input -->
-    <script src="<c:url value="/resources/vendors/jquery.tagsinput/src/jquery.tagsinput.js"/>"></script>
+	<script src="<c:url value="/resources/vendors/jquery.tagsinput/src/jquery.tagsinput.js"/>"></script>
+
+	<!-- validator -->
+	<script src="<c:url value="/resources/vendors/validator/validator.js"/>"></script>
+
+	<!-- jquery.inputmask -->
+	<script
+		src="<c:url value="/resources/vendors/jquery.inputmask/dist/min/jquery.inputmask.bundle.min.js"/>"></script>
 
 	<!-- Datatables -->
 	<script src="<c:url value="/resources/vendors/datatables.net/js/jquery.dataTables.min.js"/>"></script>
@@ -861,6 +997,13 @@
 		src="<c:url value="/resources/vendors/datatables.net-bs/js/dataTables.bootstrap.min.js"/>"></script>
 	<script
 		src="<c:url value="/resources/vendors/datatables.net-buttons/js/dataTables.buttons.min.js"/>"></script>
+		
+		
+		<!-- Datatables -->
+     <script src="<c:url value="/resources/vendors/datatables.net-scroller/js/dataTables.scroller.min.js"/>"></script>
+         <script src="<c:url value="/resources/vendors/datatables.net-fixedheader/js/dataTables.fixedHeader.min.js"/>"></script>
+    <script src="<c:url value="/resources/vendors/datatables.net-keytable/js/dataTables.keyTable.min.js"/>"></script>
+    <script src="<c:url value="/resources/vendors/datatables.net-responsive/js/dataTables.responsive.min.js"/>"></script>
 
 	<!-- Custom Theme Scripts -->
 	<script src="<c:url value="/resources/build/js/custom.min.js"/>"></script>

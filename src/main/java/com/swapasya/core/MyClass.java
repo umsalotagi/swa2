@@ -1,52 +1,65 @@
 package com.swapasya.core;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
+import java.io.*;
 
 import org.springframework.data.mongodb.core.MongoOperations;
 
-import com.swapasya.domains.AssignList;
-import com.swapasya.domains.Book;
-import com.swapasya.domains.BookTitle;
-import com.swapasya.domains.WaitList;
+import com.swapasya.domains.*;
 import com.swapasya.model.DBConnect;
 import com.swapasya.repo.BookTitleRepositoryMongoDB;
 
 public class MyClass {
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws NumberFormatException, IOException, ClassNotFoundException {
 		
 		MongoOperations op=DBConnect.getConnection();
 		BookTitleRepositoryMongoDB mdb=new BookTitleRepositoryMongoDB(op);
+
+		MyClass myClass=new MyClass();
+		File file=myClass.getFile("BookCatalogue.csv");
+
+
+		BufferedReader bir=new BufferedReader(new FileReader(file));
+		String s=null;
+		ArrayList<String> getLine=new ArrayList<>();
+		int noOfPages=0;
+		int i=0;
+		while((s=bir.readLine())!=null)
+		{
+			System.out.println("Inside while");
+			getLine.add(s);
+			String line=getLine.get(i);
+			String splitted[]=line.split(",");
+			BookTitle bookTitle;
 		
-		ArrayList<String> tags=new ArrayList<>();
-		tags.add("java");
-		tags.add("core java");
-		tags.add("advanced java");
-		
-		
-		
-		List<Book> books=new ArrayList<>();
-		Book book=new Book("b005",new Date(12, 10, 2016), 800, "xx");
-		Book book1=new Book("b006",new Date(11, 10, 2016), 800, "xx");
-		books.add(book);
-		books.add(book1);
-		
-		
-		List<WaitList> waitList=new ArrayList<>();
-		List<AssignList> assignList=new  ArrayList<>();
-		
-		
-	BookTitle bkTitle=new BookTitle("C", "1234723e", null, null,"XXX", "Folded",tags , 2000, "English","1 row 2nd column","/resources/images/c.jpg");
-		
-		bkTitle.setBooks(books);
-		bkTitle.setWaitList(waitList);
-		bkTitle.setAssignList(assignList);
-		
-		mdb.insertOne(bkTitle);
-		System.out.println("Inserted Successfully");
+			String tagsFromFile[]=splitted[6].split(":");
+			ArrayList<String> tags=new ArrayList<>();
+			
+			for(String tag:tagsFromFile)
+			{
+				tags.add(tag);
+			}
+			if(splitted[7].equals("") || splitted[7]==null){
+				noOfPages=0;
+			}
+			else
+				noOfPages=Integer.parseInt(splitted[7]);
+			
+				bookTitle=new BookTitle(splitted[0], splitted[1], splitted[2], splitted[3], splitted[4], splitted[5], tags,noOfPages , splitted[8], splitted[9], splitted[10]);
+				mdb.insertOne(bookTitle);
+				System.out.println("Inserted Successfully");
+				i++;
+		}
 
 	}
+	File getFile(String fileName){
+
+		ClassLoader classLoader = getClass().getClassLoader();
+		System.out.println(classLoader);
+		File file = new File(classLoader.getResource(fileName).getFile());
+		return file;
+	}
+			
 
 }
