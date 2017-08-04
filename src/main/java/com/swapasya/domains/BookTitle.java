@@ -35,7 +35,7 @@ public class BookTitle {
 	private ArrayList<String> tags; // e.g. english;general
 	private int noOfPages;
 	private String language;
-	private String imgPath;
+	private String imgPath = "";
 	private String location;
 	
 	//private String category; need to think ... category is already defined in book
