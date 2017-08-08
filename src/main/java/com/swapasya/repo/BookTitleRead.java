@@ -45,6 +45,10 @@ public class BookTitleRead {
 	}
 	
 	/// https://stackoverflow.com/questions/32178146/update-nested-array-list-in-mongodb-java
+	
+	// problem with uniqueness of field in single document itself.
+	// http://joegornick.com/2012/10/25/mongodb-unique-indexes-on-single-embedded-documents/
+	// problem: A book title with id BT01 can have two books of same ids BT01.1 and BT01.1 and BT01.1 and many books of same id in single document
 
 	public boolean addInWaitList(String personID, String bookID) {
 
