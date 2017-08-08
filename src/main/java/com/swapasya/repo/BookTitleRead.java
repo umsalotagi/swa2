@@ -43,6 +43,8 @@ public class BookTitleRead {
 		return doc.getString(bookTitleID);
 
 	}
+	
+	/// https://stackoverflow.com/questions/32178146/update-nested-array-list-in-mongodb-java
 
 	public boolean addInWaitList(String personID, String bookID) {
 
