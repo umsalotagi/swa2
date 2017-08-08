@@ -18,6 +18,7 @@ import static com.mongodb.client.model.Projections.include;
 
 import static java.util.Arrays.asList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.ArrayList;
 
@@ -46,12 +47,14 @@ public class BookTitleRead {
 	public boolean addInWaitList(String personID, String bookID) {
 
 		MongoCollection<Document> collection = database.getCollection("BookTitle");
-		
-		if (findInWaitList(personID, bookID) == null) {
+
+		if (findInWaitList(personID, bookID) != null) {
+			// already in waitlist
 			return false;
 		}
-		
-		collection.updateOne(eq("books.bookID", bookID), new Document("$push", new Document("id", personID)));
+
+		collection.updateOne(eq("books.bookID", bookID), new Document("$push",
+				new Document("books.id", personID).append("books.timestamp", new Date().getTime())));
 		return true;
 
 	}
