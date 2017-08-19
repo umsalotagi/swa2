@@ -2,14 +2,19 @@ package com.swapasya.repo;
 
 import com.mongodb.*;
 import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Projections;
 import com.mongodb.client.model.Filters;
 import static com.mongodb.client.model.Filters.*;
 import static com.mongodb.client.model.Projections.*;
 import com.mongodb.client.model.Sorts;
+import com.swapasya.dataTypes.BookProp;
+import com.swapasya.dataTypes.NameKinds;
 
 import org.bson.Document;
+import org.bson.conversions.Bson;
+import org.bson.types.ObjectId;
 
 import static com.mongodb.client.model.Filters.*;
 import static com.mongodb.client.model.Projections.excludeId;
@@ -20,18 +25,32 @@ import static java.util.Arrays.asList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.regex.Pattern;
 import java.util.ArrayList;
 
 import static com.swapasya.dataTypes.BookTitleProp.*;
+import static com.swapasya.dataTypes.NameKinds.*;
 
-public class BookTitleRead {
+
+public class BookTitleRead implements BookTitleReadIn {
 
 	MongoDatabase database;
+	
+	static Bson projectionBasicProperties = fields(include(bookTitleID	, bookName, author, publication));
 
-	BookTitleRead() {
+	BookTitleRead(String databaseName) {
 		MongoClient mongoClient = new MongoClient();
-		database = mongoClient.getDatabase("local");
+		if (databaseName==null) {
+			database = mongoClient.getDatabase("local");
+		} else {
+			database = mongoClient.getDatabase(databaseName);
+		}
+		
 	}
+	
+	// Mandatory basic bookTitleRelated repositories
+	
+	
 
 	public String findInWaitList(String personID, String bookID) {
 
@@ -39,6 +58,7 @@ public class BookTitleRead {
 
 		Document doc = collection.find(and(eq("books.bookID", bookID), eq("waitList.personID", personID)))
 				.projection(new Document(bookTitleID, 1)).first();
+		
 
 		return doc.getString(bookTitleID);
 
@@ -64,5 +84,156 @@ public class BookTitleRead {
 		return true;
 
 	}
+	
+
+	
+	// Read Operations
+	
+		// Crude preq
+
+	@Override
+	public long count() {
+		MongoCollection<Document> collection = database.getCollection(BookTitle);
+		return collection.count();
+	}
+
+	@Override
+	public void deleteAll() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void delete(String _bookTitleId) {
+		MongoCollection<Document> collection = database.getCollection(BookTitle);
+		collection.deleteOne(eq(bookTitleID, _bookTitleId));
+		
+	}
+
+	@Override // NO NEED
+	public void delete(Document bookTitle) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public boolean exists(String bookTitleId) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+	
+	
+	
+	
+	// user defined
+
+	@Override
+	public MongoCursor<Document> findAll() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
+	/**
+	 * @return BookTitle with projected properties of bookTitleID, bookName, author, publication
+	 */
+	@Override
+	public MongoCursor<Document> findByBookName(String bookTitle) {
+		MongoCollection<Document> collection = database.getCollection(BookTitle);
+		return collection.find(regex(bookName, Pattern.compile(bookTitle, Pattern.CASE_INSENSITIVE))).projection(projectionBasicProperties).iterator();
+	}
+
+	@Override
+	public MongoCursor<Document> findByTag(String _tag) {
+		// still need to do equal ignore case
+		MongoCollection<Document> collection = database.getCollection(BookTitle);
+		return collection.find(eq(tags, _tag)).projection(projectionBasicProperties).iterator();
+	}
+
+	@Override
+	public MongoCursor<Document> findByAuthor(String _author) {
+		MongoCollection<Document> collection = database.getCollection(BookTitle);
+		return collection.find(regex(author, Pattern.compile(_author, Pattern.CASE_INSENSITIVE))).projection(projectionBasicProperties).iterator();
+
+	}
+	
+	/**
+	 * @return BookTitle with projected properties of bookTitleID, bookName, author, publication
+	 */
+	@Override
+	public MongoCursor<Document> findByPublication(String _publication) {
+		MongoCollection<Document> collection = database.getCollection(BookTitle);
+		return collection.find(regex(publication, Pattern.compile(_publication, Pattern.CASE_INSENSITIVE))).projection(projectionBasicProperties).iterator();
+	}
+
+	
+	/**
+	 * @return BookTitle with projected properties of bookTitleID, bookName, author, publication
+	 */
+	@Override
+	public Document findByBookId(String _bookId) {
+		MongoCollection<Document> collection = database.getCollection(BookTitle);
+		return collection.find(eq(books_bookID, _bookId)).projection(projectionBasicProperties).first();
+	}
+	
+	/**
+	 * @return BookTitle with projected properties of bookTitleID, bookName, author, publication
+	 */
+	@Override
+	public Document findByBookTitleId(String _bookTitleId) {
+		MongoCollection<Document> collection = database.getCollection(BookTitle);
+		return collection.find(eq(bookTitleID, _bookTitleId)).projection(projectionBasicProperties).first();
+	}
+	
+	/**
+	 * @return FULL BookTitle Document which has every property, books, waitList and asignList. USE IT ONLY WHEN NECESSARY
+	 */
+	@Override
+	public Document findByBookIdFULL(String _bookId) {
+		MongoCollection<Document> collection = database.getCollection(BookTitle);
+		return collection.find(eq(books_bookID, _bookId)).first();
+	}
+
+	/**
+	 * @return FULL BookTitle Document which has every property, books, waitList and asignList. USE IT ONLY WHEN NECESSARY
+	 */
+	@Override
+	public Document findByBookTitleIdFULL(String _bookTitleId) {
+		MongoCollection<Document> collection = database.getCollection(BookTitle);
+		return collection.find(eq(bookTitleID, _bookTitleId)).first();
+	}
+	
+	
+	
+	// Write Operations
+	
+		// Crude preq
+
+	@Override
+	public void insertOne(Document bookTitle) {
+		MongoCollection<Document> collection = database.getCollection(BookTitle);
+		collection.insertOne(bookTitle);
+	}
+	
+	
+	public void addBookToBookTitle (String _bookTitleID, Document book) {
+		
+		MongoCollection<Document> collection = database.getCollection(BookTitle);
+		
+		
+		
+		Document doc = collection.find(eq(books_bookID, book.getString(BookProp.bookID))).projection(new Document(bookTitleID, 1)).first();
+		System.out.println("newwwwwwwwww");
+		if (doc==null)
+			System.out.println("NULL Docccccccccccccc");
+		else if (doc.getString(bookTitleID)==null)
+			System.out.println("property nullllllllllllll");
+		else
+			return;
+		
+		collection.updateOne(eq("_id", _bookTitleID), new Document("$push", new Document ("Books", book)));
+		
+	}
+
+	
 
 }
