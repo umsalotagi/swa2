@@ -299,7 +299,7 @@
 										<div class="x_content">
 											<br />
 											<form id="demo-form2" data-parsley-validate
-												class="form-horizontal form-label-left" action="search_book.html">
+												class="form-horizontal form-label-left" action="bookTitle/search_book">
 
 
 
@@ -386,7 +386,7 @@
 																			
 														//					pageContext.setAttribute("bookTitles", bookTitles);
 																			
-																			%>
+																			--%>
 															
 																 
 																
