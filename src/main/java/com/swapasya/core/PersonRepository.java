@@ -1,4 +1,4 @@
-package com.swapasya.repo;
+package com.swapasya.core;
 
 import java.util.List;
 

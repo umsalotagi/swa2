@@ -13,7 +13,6 @@ import com.swapasya.dataTypes.BookTitleProp;
 import com.swapasya.domains.Book;
 import com.swapasya.domains.BookTitle;
 import com.swapasya.model.DBConnect;
-import com.swapasya.repo.BookTitleRepositoryMongoDB;
 
 public class SpringMongo {
 

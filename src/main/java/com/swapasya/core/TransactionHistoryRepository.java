@@ -1,4 +1,4 @@
-package com.swapasya.repo;
+package com.swapasya.core;
 
 import org.springframework.data.repository.CrudRepository;
 
