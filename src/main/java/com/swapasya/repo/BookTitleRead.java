@@ -191,7 +191,7 @@ public class BookTitleRead implements BookTitleReadIn {
 	}
 	
 	// just for equal ignore case
-	private Document  findByBookNameAndAuthorAndPub (String _bookName, String _author, String _publication) {
+	public Document  findByBookNameAndAuthorAndPub (String _bookName, String _author, String _publication) {
 
 		MongoCollection<Document> collection = database.getCollection(BookTitle);
 
