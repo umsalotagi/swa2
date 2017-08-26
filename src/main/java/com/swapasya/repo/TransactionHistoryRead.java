@@ -5,13 +5,13 @@ import static com.mongodb.client.model.Filters.*;
 import static com.mongodb.client.model.Projections.fields;
 import static com.mongodb.client.model.Projections.include;
 import static com.swapasya.dataTypes.NameKinds.TransactionHistory;
-import static com.swapasya.dataTypes.PersonProp.personID;
 import static com.swapasya.dataTypes.PersonProp.personName;
 import static com.swapasya.dataTypes.TransactionHistoryProp.*;
 
 import java.util.Date;
 import java.util.List;
 import java.util.regex.Pattern;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
@@ -149,31 +149,22 @@ public class TransactionHistoryRead implements TransactionHistoryReadIn {
 	}
 
 	@Override
-	public MongoCursor<Document> findByDateOfIssue(Date _dateOfIssue) {
+	public MongoCursor<Document> findByDateOfIssue(Date startDate,Date endDate) {
 		// TODO Auto-generated method stub
-		return collection.find(eq(dateOfIssue,_dateOfIssue)).iterator();
-	}
-
-	@Override
-	public MongoCursor<Document> findByTodayIssue(Date x) {
-		// TODO Auto-generated method stub
-		return collection.find(eq(dateOfIssue,x)).iterator();
-	}	
-	
-	
-	
-	@Override
-	public MongoCursor<Document> findByDateOfReturn(Date _dateOfReturn) {
-		// TODO Auto-generated method stub
-		return collection.find(eq(dateOfReturn,_dateOfReturn)).iterator();
+//		LocalDate date = LocalDate.now();
+		
+		return collection.find(and(gte(dateOfIssue,startDate),lt(dateOfIssue,endDate))).iterator();
 	}
 
 	
+	
 	@Override
-	public MongoCursor<Document> findByTodayReturn(Date _dateOfReturn) {
+	public MongoCursor<Document> findByDateOfReturn(Date startDate,Date endDate) {
 		// TODO Auto-generated method stub
-		return collection.find(eq(dateOfReturn,_dateOfReturn)).iterator();
+		return collection.find(and(gte(dateOfReturn,startDate),lt(dateOfReturn,endDate))).iterator();
 	}
+
+	
 	
 	@Override
 	public MongoCursor<Document> findByBookID(String _bookID) {
@@ -226,7 +217,7 @@ public class TransactionHistoryRead implements TransactionHistoryReadIn {
 
 	@Override
 	public MongoCursor<Document> findCompound(String _issuetype, Date _dateOfIssue, Date _dateOfReturn, String _bookID,
-			int _fineCollected, String _courseyear, String _branch, String _degree,String _bookName, String _author) {
+			Integer _fineCollected,String _personID, String _courseyear, String _branch, String _degree,String _bookName, String _author) {
 		// TODO Auto-generated method stub
 		
 		
@@ -255,6 +246,11 @@ public class TransactionHistoryRead implements TransactionHistoryReadIn {
 			filters.add(c);
 		}	
 		
+		if (_personID!=null) {
+			Bson c=(Bson) eq(personID,_personID);
+			filters.add(c);
+		}
+		
 		if (_degree!=null) {
 			Bson c=(Bson) eq(degree,_degree);
 			filters.add(c);
@@ -274,7 +270,7 @@ public class TransactionHistoryRead implements TransactionHistoryReadIn {
 			filters.add(c);
 		}
 		
-				
+		System.out.println(filters.toString());		
 		return  collection.find(and(filters)).iterator();
 				
 	

@@ -3,6 +3,8 @@ package com.swapasya.repo;
 import org.bson.Document;
 
 import com.mongodb.client.MongoCursor;
+
+import java.time.LocalDate;
 import java.util.Date;
 
 
@@ -40,13 +42,9 @@ public interface TransactionHistoryReadIn {
 		
 		MongoCursor<Document> findByIssuetype(String issuetype);
 		
-		MongoCursor<Document> findByDateOfIssue(Date dateOfIssue);
-		
-		MongoCursor<Document> findByTodayIssue(Date dateOfIssue);
-		
-		MongoCursor<Document> findByDateOfReturn(Date dateOfReturn);
-		
-		MongoCursor<Document> findByTodayReturn(Date dateOfReturn);
+		MongoCursor<Document> findByDateOfIssue(Date startDate, Date endDate);
+			
+		MongoCursor<Document> findByDateOfReturn(Date startDate, Date endDate);
 		
 		MongoCursor<Document> findByBookID(String bookID);
 		
@@ -64,7 +62,7 @@ public interface TransactionHistoryReadIn {
 		
 		MongoCursor<Document> findByAuthour(String authour);
 		
-		MongoCursor<Document> findCompound(String issuetype,Date dateOfIssue, Date dateOfReturn,String bookID,int fineCollected,String courseyear,String branch,String degree,String bookName,String author);
+		MongoCursor<Document> findCompound(String issuetype,Date dateOfIssue, Date dateOfReturn,String bookID,Integer fineCollected,String personID,String courseyear,String branch,String degree,String bookName,String author);
 		
 		//Document findByPersonName(String personName);
 		
