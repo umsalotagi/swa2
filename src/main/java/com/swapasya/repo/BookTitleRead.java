@@ -248,9 +248,11 @@ public class BookTitleRead implements BookTitleReadIn {
 	public String isBookAvailable (String _bookID) {
 		
 		MongoCollection<Document> collection = database.getCollection(BookTitle);
+	//	collection.find(eq(books_bookID, _bookId)).projection(projectionBasicProperties).first();
 		try {
-			return collection.find(eq(books_bookID,_bookID)).projection(new Document (books_borrowedBy, 1)).first().getString(books_borrowedBy);
+			return collection.find(eq(books_bookID,_bookID)).projection(fields(include(books_borrowedBy))).first().getString(books_borrowedBy);
 		} catch (Exception e) {
+			e.printStackTrace();
 			return null;
 		}
 		
@@ -262,8 +264,8 @@ public class BookTitleRead implements BookTitleReadIn {
 		MongoCollection<Document> collection = database.getCollection(BookTitle);
 	//	collection.updateOne(eq(books_bookID,_bookID), new Document ("$push", new Document ("Books.$.")));
 		
-		collection.updateOne(eq(books_bookID, _bookID),   new Document ("Books.borrowedBy", _personID)
-				.append("Books.issuedType", _issuedType));
+		collection.updateOne(new Document (books_bookID, _bookID),  new Document ("$set", new Document ("Books.$.borrowedBy", _personID)
+				.append("Books.$.issuedType", _issuedType)));
 		
 	}
 	
