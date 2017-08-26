@@ -83,7 +83,7 @@ public class PersonRead implements PersonIn {
 				.projection(projectionBasicProperties).iterator();
 	}
 
-	public String givePersonRole(String _personId) {
+	public String getPersonRole(String _personId) {
 		return collection.find(eq(personID, _personId)).projection(new Document(role, 1)).first().getString(role);
 	}
 
