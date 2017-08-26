@@ -38,7 +38,7 @@ public class BookTitleRead implements BookTitleReadIn {
 	
 	static Bson projectionBasicProperties = fields(include(bookTitleID	, bookName, author, publication));
 
-	public BookTitleRead(String databaseName) {
+	BookTitleRead(String databaseName) {
 		MongoClient mongoClient = new MongoClient();
 		if (databaseName==null) {
 			database = mongoClient.getDatabase("local");
@@ -46,44 +46,14 @@ public class BookTitleRead implements BookTitleReadIn {
 			database = mongoClient.getDatabase(databaseName);
 		}
 		
+		
 	}
-	
+
 	// Mandatory basic bookTitleRelated repositories
 	
 	
 
-	public String findInWaitList(String personID, String bookID) {
-
-		MongoCollection<Document> collection = database.getCollection("BookTitle");
-
-		Document doc = collection.find(and(eq("books.bookID", bookID), eq("waitList.personID", personID)))
-				.projection(new Document(bookTitleID, 1)).first();
-		
-
-		return doc.getString(bookTitleID);
-
-	}
 	
-	/// https://stackoverflow.com/questions/32178146/update-nested-array-list-in-mongodb-java
-	
-	// problem with uniqueness of field in single document itself.
-	// http://joegornick.com/2012/10/25/mongodb-unique-indexes-on-single-embedded-documents/
-	// problem: A book title with id BT01 can have two books of same ids BT01.1 and BT01.1 and BT01.1 and many books of same id in single document
-
-	public boolean addInWaitList(String personID, String bookID) {
-
-		MongoCollection<Document> collection = database.getCollection("BookTitle");
-
-		if (findInWaitList(personID, bookID) != null) {
-			// already in waitlist
-			return false;
-		}
-
-		collection.updateOne(eq("books.bookID", bookID), new Document("$push",
-				new Document("books.id", personID).append("books.timestamp", new Date().getTime())));
-		return true;
-
-	}
 	
 
 	
@@ -219,21 +189,82 @@ public class BookTitleRead implements BookTitleReadIn {
 		
 		MongoCollection<Document> collection = database.getCollection(BookTitle);
 		
-		
-		
 		Document doc = collection.find(eq(books_bookID, book.getString(BookProp.bookID))).projection(new Document(bookTitleID, 1)).first();
-		System.out.println("newwwwwwwwww");
-		if (doc==null)
-			System.out.println("NULL Docccccccccccccc");
-		else if (doc.getString(bookTitleID)==null)
-			System.out.println("property nullllllllllllll");
-		else
-			return;
+		if (doc!=null && doc.getString(bookTitleID)!=null) {
+			// Duplicate entry
+			return;			
+		}
 		
 		collection.updateOne(eq("_id", _bookTitleID), new Document("$push", new Document ("Books", book)));
 		
 	}
+	
+	public void removeBookFromBookTitle (String _bookTitleID, String bookID ) {
+		
+		MongoCollection<Document> collection = database.getCollection(BookTitle);
+		collection.updateOne(eq("_id", _bookTitleID), new Document("$pull", new Document ("Books", new Document (BookProp.bookID, bookID))));
+		
+	}
+	
+	
+	private String findInWaitList(String personID, String bookID) {
 
+		MongoCollection<Document> collection = database.getCollection(BookTitle);
+
+		Document doc = collection.find(and(eq(books_bookID, bookID), eq(waitList_personID, personID)))
+				.projection(new Document(bookTitleID, 1)).first();
+		
+		if (doc==null)
+			return null;
+		
+		return doc.getString(bookTitleID);
+
+	}
+	
+	/// https://stackoverflow.com/questions/32178146/update-nested-array-list-in-mongodb-java
+	
+	// problem with uniqueness of field in single document itself.
+	// http://joegornick.com/2012/10/25/mongodb-unique-indexes-on-single-embedded-documents/
+	// problem: A book title with id BT01 can have two books of same ids BT01.1 and BT01.1 and BT01.1 and many books of same id in single document
+
+	public boolean addInWaitList(String personID, String bookID) {
+
+		MongoCollection<Document> collection = database.getCollection(BookTitle);
+
+		if (findInWaitList(personID, bookID) != null) {
+			// already in waitlist
+			return false;
+		}
+
+		collection.updateOne(eq(books_bookID, bookID), new Document("$push", new Document (waitList, new Document(waitList_personID, personID).append(waitList_timestamp, new Date().getTime()))));
+		return true;
+
+	}
+	
+	
+	public boolean removeFromWaitList(String personID, String bookID) {
+
+		MongoCollection<Document> collection = database.getCollection(BookTitle);
+
+		if (findInWaitList(personID, bookID) == null) {
+			// not in waitlist, no need to remove
+			return false;
+		}
+
+		collection.updateOne(eq(books_bookID, bookID), new Document("$pull", new Document (waitList, new Document(waitList_personID, personID))));
+		return true;
+
+	}
+	
+	
+	/*
+	 * in one book issue we will do following
+	 * 1. remove from assign list, issue book... 
+	 * 2. remove another person from wait list and add to assign list
+	 * 
+	 * For this we need to lean transaction in mongoDB for doing this
+	 * 
+	 */
 	
 
 }
