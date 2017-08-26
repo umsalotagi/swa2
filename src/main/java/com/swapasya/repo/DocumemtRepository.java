@@ -2,6 +2,8 @@ package com.swapasya.repo;
 
 import static com.swapasya.dataTypes.BookTitleProp.*;
 
+import  com.swapasya.dataTypes.TransactionHistoryProp;
+
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -11,10 +13,10 @@ import com.swapasya.dataTypes.BookProp;
 
 public class DocumemtRepository {
 	
-	public static Document emptyListBookTitle (String _bookTitleID, String _isbnNumber, String _bookName, String _authour, String _publication,
+	public static Document emptyListBookTitle (String _bookTitleID, String _isbnNumber, String _bookName, String _author, String _publication,
 			String _bindingType, ArrayList<String> _tags, int _noOfPages, String _language,String _location,String _imgPath) {
 		
-		return new Document(bookTitleID, _bookTitleID).append(isbnNumber, _isbnNumber).append(bookName, _bookName).append(author, _authour)
+		return new Document(bookTitleID, _bookTitleID).append(isbnNumber, _isbnNumber).append(bookName, _bookName).append(author, _author)
 				.append(publication, _publication).append(bindingType, _bindingType).append(tags, _tags).append(noOfPages, _noOfPages)
 				.append(language, _language).append(location, _location).append(imgPath, _imgPath);
 		
@@ -37,6 +39,17 @@ public class DocumemtRepository {
 		return new Document(s_personID, _personID).append(s_timestamp, _timestamp); 
 	}
 	
+	
+//	TransactionHistory Document
+
+	public static Document TransactionHistory (String _issuetype, Date _dateOfIssue, Date _dateOfReturn, String _bookID,
+			long _fineCollected,String _personID, String _courseyear, String _branch,String _degree,int _renewIndex,String _bookName,String _author) {
+		
+		return new Document(TransactionHistoryProp.issuetype, _issuetype).append(TransactionHistoryProp.dateOfIssue, _dateOfIssue).append(TransactionHistoryProp.dateOfReturn, _dateOfReturn).append(TransactionHistoryProp.bookID, _bookID)
+				.append(TransactionHistoryProp.fineCollected, _fineCollected).append(TransactionHistoryProp.personID, _personID).append(TransactionHistoryProp.courseyear, _courseyear).append(TransactionHistoryProp.branch, _branch)
+				.append(TransactionHistoryProp.degree, _degree).append(TransactionHistoryProp.renewIndex, _renewIndex).append(TransactionHistoryProp.bookName, _bookName).append(TransactionHistoryProp.author, _author);
+		
+	}
 	
 	
 }
