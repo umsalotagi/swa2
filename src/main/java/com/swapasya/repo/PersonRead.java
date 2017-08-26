@@ -17,55 +17,51 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
 
-public class PersonRead implements PersonIn 
-{
+public class PersonRead implements PersonIn {
 	MongoDatabase database;
 	MongoCollection<Document> collection;
-	
-	static Bson projectionBasicProperties = fields(include(personID,personName,rollNo,branch,address));
+
+	static Bson projectionBasicProperties = fields(include(personID, personName, rollNo, branch, address));
 
 	public PersonRead(String databaseName) {
-		MongoClient mongoClient = new MongoClient("localhost",27017);
-		 
-		if (databaseName==null) {
+		MongoClient mongoClient = new MongoClient("localhost", 27017);
+
+		if (databaseName == null) {
 			database = mongoClient.getDatabase("local");
-			collection= database.getCollection(Person);
+
 		} else {
 			database = mongoClient.getDatabase(databaseName);
-			collection= database.getCollection(Person);
-		}
-		
-	}
 
+		}
+
+		collection = database.getCollection(Person);
+
+	}
 
 	@Override
 	public long count() {
-		// TODO Auto-generated method stub
-		long cnt=collection.count();
-		System.out.println(cnt);
-		return cnt;
+		return collection.count();
 	}
 
 	@Override
 	public void deleteAll() {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
-	public void delete(String personId) {
-		// TODO Auto-generated method stub
-		collection.deleteOne(eq(personID, personId));		
+	public void delete(String _personId) {
+		collection.deleteOne(eq(personID, _personId));
 	}
 
 	@Override
 	public void delete(Document Person) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
-	public boolean exists(String personID) {
+	public boolean exists(String _personID) {
 		// TODO Auto-generated method stub
 		return false;
 	}
@@ -77,22 +73,23 @@ public class PersonRead implements PersonIn
 	}
 
 	@Override
-	public Document findByPersonId(String personId) {
-		// TODO Auto-generated method stub
-		return collection.find(eq(personID, personId)).projection(projectionBasicProperties).first();
+	public Document findByPersonId(String _personId) {
+		return collection.find(eq(personID, _personId)).projection(projectionBasicProperties).first();
 	}
 
 	@Override
 	public MongoCursor<Document> findByPersonName(String _personName) {
-		// TODO Auto-generated method stub
-		return collection.find(regex(personName, Pattern.compile(_personName, Pattern.CASE_INSENSITIVE))).projection(projectionBasicProperties).iterator();
+		return collection.find(regex(personName, Pattern.compile(_personName, Pattern.CASE_INSENSITIVE)))
+				.projection(projectionBasicProperties).iterator();
+	}
+
+	public String givePersonRole(String _personId) {
+		return collection.find(eq(personID, _personId)).projection(new Document(role, 1)).first().getString(role);
 	}
 
 	@Override
 	public void insertOne(Document person) {
-		// TODO Auto-generated method stub
 		collection.insertOne(person);
-		
 	}
 
 }
