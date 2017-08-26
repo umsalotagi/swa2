@@ -13,6 +13,12 @@ public class LibraryAdminProp {
 	
 	public static final String principle = "principle";
 	public static final String principleName = "principleName";
+	
+	public static final String roles = "roles";
+	
+	public static final String readerTypes = "readerTypes";
+	public static final String issueTypes = "issueTypes";
+	public static final String categoryTypes = "categoryTypes";
 
 	
 
