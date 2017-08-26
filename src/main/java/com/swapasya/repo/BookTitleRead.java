@@ -6,6 +6,7 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Projections;
+import com.mongodb.client.model.CountOptions;
 import com.mongodb.client.model.Filters;
 import static com.mongodb.client.model.Filters.*;
 import static com.mongodb.client.model.Projections.*;
@@ -213,6 +214,12 @@ public class BookTitleRead implements BookTitleReadIn {
 		collection.insertOne(bookTitle);
 	}
 	
+	/**
+	 * 
+	 * @param _personID
+	 * @param _issuedType
+	 * @return FindIterable<Document> : list of bookIDs issued through _issuedType which are in possession of _personID 
+	 */
 	public FindIterable<Document> bkIssuedTo (String _personID, String _issuedType) {
 		
 		MongoCollection<Document> collection = database.getCollection(BookTitle);
@@ -220,6 +227,24 @@ public class BookTitleRead implements BookTitleReadIn {
 		
 	}
 	
+	/**
+	 * 
+	 * @param _personID
+	 * @param _issuedType
+	 * @return long : number of books issued to _personID through _issuedType issue.
+	 */
+	public long countBkIssuedTo (String _personID, String _issuedType) {
+		
+		MongoCollection<Document> collection = database.getCollection(BookTitle);
+		return collection.count(and (eq(books_borrowedBy, _personID), eq(books_issuedType, _issuedType)));
+		
+	}
+	
+	/**
+	 * 
+	 * @param _bookID
+	 * @return String : personID who has got this book
+	 */
 	public String isBookAvailable (String _bookID) {
 		
 		MongoCollection<Document> collection = database.getCollection(BookTitle);
@@ -229,6 +254,16 @@ public class BookTitleRead implements BookTitleReadIn {
 			return null;
 		}
 		
+		
+	}
+	
+	public void issueBookToPerson (String _bookID, String _personID, String _issuedType, Date _issueDate, Date _expectedReturnDate) {
+		
+		MongoCollection<Document> collection = database.getCollection(BookTitle);
+	//	collection.updateOne(eq(books_bookID,_bookID), new Document ("$push", new Document ("Books.$.")));
+		
+		collection.updateOne(new Document (books_bookID, _bookID),  new Document ("$push", new Document ("Books.$.borrowedBy", _personID)
+				.append("Books.$.issuedType", _issuedType)));
 		
 	}
 	
@@ -255,9 +290,11 @@ public class BookTitleRead implements BookTitleReadIn {
 	}
 	
 	
-	private String findInWaitList(String _personID, String _bookID) {
+	public String findInWaitList(String _personID, String _bookID) {
 
 		MongoCollection<Document> collection = database.getCollection(BookTitle);
+		
+		// whether person is valid or not
 
 		Document doc = collection.find(and(eq(books_bookID, _bookID), eq(waitList_personID, _personID)))
 				.projection(new Document(bookTitleID, 1)).first();
@@ -304,6 +341,20 @@ public class BookTitleRead implements BookTitleReadIn {
 
 	}
 	
+	public boolean removeFromAssignList(String _personID, String _bookID) {
+
+		MongoCollection<Document> collection = database.getCollection(BookTitle);
+
+//		if (findInAssignList(_personID, _bookID) == null) {
+//			// not in waitlist, no need to remove
+//			return false;
+//		}
+
+		collection.updateOne(eq(books_bookID, _bookID), new Document("$pull", new Document (assignList, new Document(assignList_personID, _personID))));
+		return true;
+
+	}
+	
 	
 	/*
 	 * in one book issue we will do following
@@ -314,15 +365,7 @@ public class BookTitleRead implements BookTitleReadIn {
 	 * 
 	 */
 	
-	public void issueBook (String _bookID, String _personID) {
-		issueBook(_bookID, _personID, "NormalIssue");
-	}
 	
-	public void issueBook (String _bookID, String _personID, String issueType) {
-		
-		
-		
-	}
 	
 
 	

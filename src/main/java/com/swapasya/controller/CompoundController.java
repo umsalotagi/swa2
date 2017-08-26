@@ -16,8 +16,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.swapasya.dataTypes.RulesProp;
 import com.swapasya.repo.BookTitleRead;
 import com.swapasya.repo.DocumemtRepository;
+import com.swapasya.repo.LibraryRulesRead;
+import com.swapasya.repo.PersonRead;
 
 @RestController
 
@@ -127,6 +130,45 @@ public class CompoundController {
 			bookTitleRead.addBookToBookTitle(bt.getString(bookTitleID), d);
 			
 		}
+		
+		
+	}
+	
+	
+	
+	
+	public void issueBook (String _bookID, String _personID) {
+		issueBook(_bookID, _personID, "NormalIssue");
+	}
+	
+	public void issueBook (String _bookID, String _personID, String _issueType) {
+		
+		PersonRead pr = new PersonRead("");
+		
+		
+		LibraryRulesRead lr = new LibraryRulesRead("");
+		Document rules = lr.findRulesFor(pr.getPersonRole(_personID), _issueType);
+		
+		
+		
+		BookTitleRead btr = new BookTitleRead("");
+		if ( (int)btr.countBkIssuedTo(_personID, _issueType) >= rules.getInteger(RulesProp.maxQuantity, 50)) {
+			// max qty number reached
+			return;
+		}
+		
+		if (btr.isBookAvailable(_bookID)!=null) {
+			// book is already issued
+			return;
+		}
+		
+		Date x = new Date ();
+		
+		// update book Fields
+		btr.issueBookToPerson(_bookID, _personID, _issueType, x, x);
+		
+		// remove from assign list
+		
 		
 		
 	}

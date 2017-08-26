@@ -4,6 +4,7 @@ import static org.junit.Assert.*;
 
 import java.awt.List;
 import java.util.Arrays;
+import java.util.Date;
 
 import org.bson.Document;
 import org.junit.BeforeClass;
@@ -125,6 +126,30 @@ public class BookTitleReadTest {
 		btr.removeBookFromBookTitle("18A", "18A.7");
 		
 		assertTrue(btr.findByBookId("18A.7")==null);
+	}
+	
+	@Test
+	public void addToWaitList () {
+		
+		btr.addInWaitList("p01", "18A.1");
+		
+		assertEquals("18A", btr.findInWaitList("p01", "18A.1"));
+		
+		btr.addInWaitList("p02", "18A.1");
+		
+		assertEquals("18A", btr.findInWaitList("p02", "18A.1"));
+		
+	}
+	
+	@Test
+	public void issueBookToPerson () {
+		
+		btr.issueBookToPerson("18A.1", "p01", "NormalIssue", new Date(), null);
+		
+		assertEquals("p01", btr.isBookAvailable("18A.1"));
+		
+		//btr.findByBookId("18A.1").getString(key)
+		
 	}
 	
 

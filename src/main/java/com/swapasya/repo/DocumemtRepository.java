@@ -45,14 +45,14 @@ public class DocumemtRepository {
 		return new Document(s_personID, _personID).append(s_timestamp, _timestamp);
 	}
 
-	public Document addPersonDetails(String _personID, String _password, String _firstName, String _lastName,
-			Document _address, String _emailId, long _mobileNo, String _degree, String _branch, int _courseyear, int _rollNo, String _role, Date _admissionDate, String _parentName, String _parentContact) {
+	public static Document person (String _personID, String _password, String _firstName, String _lastName,
+			Document _address, String _emailId, String _mobileNo, String _degree, String _branch, int _courseyear, int _rollNo, String _role, Date _admissionDate, String _parentName, String _parentContact) {
 
 		// boolean auth = db.authenticate(myUserName, myPassword);
 		// System.out.println("Authentication: "+auth);
 
 		return new Document(PersonProp.personID, _personID)
-				.append(PersonProp.password, _password).append(PersonProp.personName, _firstName)
+				.append(PersonProp.password, _password).append(PersonProp.personName, _firstName  + " " +_lastName)
 				.append(PersonProp.address, _address).append(PersonProp.emailId, _emailId)
 				.append(PersonProp.mobileNo, _mobileNo).append(PersonProp.degree, _degree)
 				.append(PersonProp.parentName, _parentName).append(PersonProp.parentContact, _parentContact)
@@ -63,7 +63,7 @@ public class DocumemtRepository {
 	}
 	
 	
-	public Document libraryRules(String _readerType, String _bkCatORissueType, int bookQuantityLimit, 
+	public static Document libraryRules(String _readerType, String _bkCatORissueType, int bookQuantityLimit, 
 			int dayLimitForEachBook , float _finePerDay, boolean _isCategoryRule, int _maxQuantity) {
 		
 		return new Document(RulesProp.readerType, _readerType)
