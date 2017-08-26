@@ -38,7 +38,7 @@ public class BookTitleRead implements BookTitleReadIn {
 	
 	static Bson projectionBasicProperties = fields(include(bookTitleID	, bookName, author, publication));
 
-	BookTitleRead(String databaseName) {
+	public BookTitleRead(String databaseName) {
 		MongoClient mongoClient = new MongoClient();
 		if (databaseName==null) {
 			database = mongoClient.getDatabase("local");
