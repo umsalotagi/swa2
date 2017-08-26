@@ -19,7 +19,7 @@ public class PersonRead_Test {
 	public static void setUpBeforeClass() throws Exception {
 		System.out.println("start test");
 		// We will add data in here
-		ptr = new PersonRead("test4");
+		ptr = new PersonRead("test12");
 		try {
 			ptr.insertOne(new Document("_id", "p02").append(personName, "B")
 					.append(password, "b123").append(address, "pune").append(emailId, "b@gmail.com")
@@ -43,13 +43,13 @@ public class PersonRead_Test {
 
 	@Test
 	public void findByPersonId() {
-		assertEquals("single person", ptr.findByPersonId("p02").getString(personID));
+		assertEquals("B", ptr.findByPersonId("p02").getString(personName));
 
 	}
 
 	@Test
 	public void findByPersonName() {
-		assertEquals("single person", ptr.findByPersonName("A").next().getString(personName));
+		assertEquals("Rahul Shete", ptr.findByPersonName("Rahul").next().getString(personName));
 
 		MongoCursor<Document> cur = ptr.findByPersonName("A");
 		// int x=0;

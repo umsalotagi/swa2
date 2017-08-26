@@ -25,7 +25,7 @@ public class BookTitleReadTest {
 	public static void setUpBeforeClass() throws Exception {
 		System.out.println("start test");
 		// We will add data in here
-		btr = new BookTitleRead("test4");
+		btr = new BookTitleRead("test12");
 		try {
 			btr.insertOne(new Document("_id", "20A").append(bookName, "three name3").append(bookTitleID, "20A").append(author, "three authour1")
 					.append(publication, "three publication1").append(noOfPages, 235).append(tags, Arrays.asList("fluid", "english","mech")));

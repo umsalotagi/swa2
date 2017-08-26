@@ -262,8 +262,8 @@ public class BookTitleRead implements BookTitleReadIn {
 		MongoCollection<Document> collection = database.getCollection(BookTitle);
 	//	collection.updateOne(eq(books_bookID,_bookID), new Document ("$push", new Document ("Books.$.")));
 		
-		collection.updateOne(new Document (books_bookID, _bookID),  new Document ("$push", new Document ("Books.$.borrowedBy", _personID)
-				.append("Books.$.issuedType", _issuedType)));
+		collection.updateOne(eq(books_bookID, _bookID),   new Document ("Books.borrowedBy", _personID)
+				.append("Books.issuedType", _issuedType));
 		
 	}
 	
@@ -321,7 +321,7 @@ public class BookTitleRead implements BookTitleReadIn {
 			return false;
 		}
 
-		collection.updateOne(eq(books_bookID, _bookID), new Document("$push", new Document (waitList, new Document(waitList_personID, _personID).append(waitList_timestamp, new Date().getTime()))));
+		collection.updateOne(eq(books_bookID, _bookID), new Document("$push", new Document (waitList, new Document(s_personID, _personID).append(s_timestamp, new Date().getTime()))));
 		return true;
 
 	}
@@ -336,7 +336,7 @@ public class BookTitleRead implements BookTitleReadIn {
 			return false;
 		}
 
-		collection.updateOne(eq(books_bookID, _bookID), new Document("$pull", new Document (waitList, new Document(waitList_personID, _personID))));
+		collection.updateOne(eq(books_bookID, _bookID), new Document("$pull", new Document (waitList, new Document(s_personID, _personID))));
 		return true;
 
 	}
@@ -350,7 +350,7 @@ public class BookTitleRead implements BookTitleReadIn {
 //			return false;
 //		}
 
-		collection.updateOne(eq(books_bookID, _bookID), new Document("$pull", new Document (assignList, new Document(assignList_personID, _personID))));
+		collection.updateOne(eq(books_bookID, _bookID), new Document("$pull", new Document (assignList, new Document(s_personID, _personID))));
 		return true;
 
 	}
