@@ -15,7 +15,7 @@ import com.swapasya.repo.BookTitleRead;
 public class BookTitleController
 {
 	//searching by bookTitleID
-	@RequestMapping(value="/searchBy/{bookTitleID}",method=RequestMethod.GET)
+	@RequestMapping(value="/searchByBtID/{bookTitleID}",method=RequestMethod.GET)
 	public Document getByBookTitleID(@PathVariable String bookTitleID)
 	{
 		Document bookTitleDoc=null;
@@ -26,7 +26,7 @@ public class BookTitleController
 	}
 	
 	//searching by bookTitleTag
-	/*	@RequestMapping(value="/searchBy/{tag}",method=RequestMethod.GET)
+		@RequestMapping(value="/searchByTag/{tag}",method=RequestMethod.GET)
 		public MongoCursor<Document> getByBookTitleTag(@PathVariable String tag)
 		{
 			MongoCursor<Document> bookTitleDocs=null;
@@ -37,7 +37,7 @@ public class BookTitleController
 		}
 		
 		//searching by bookID
-		@RequestMapping(value="/searchBy/{bookID}",method=RequestMethod.GET)
+		@RequestMapping(value="/searchByBID/{bookID}",method=RequestMethod.GET)
 		public Document getByBookID(@PathVariable String bookID)
 		{
 			Document bookDoc=null;
@@ -49,7 +49,7 @@ public class BookTitleController
 		
 		
 		//searching by bookAuthor
-				@RequestMapping(value="/searchBy/{author}",method=RequestMethod.GET)
+				@RequestMapping(value="/searchByAuth/{author}",method=RequestMethod.GET)
 				public MongoCursor<Document> getByBookTitleAuthor(@PathVariable String author)
 				{
 					MongoCursor<Document> bookTitleDocs=null;
@@ -60,7 +60,7 @@ public class BookTitleController
 				}
 	
 				//searching by bookPublication
-				@RequestMapping(value="/searchBy/{publication}",method=RequestMethod.GET)
+				@RequestMapping(value="/searchByPub/{publication}",method=RequestMethod.GET)
 				public MongoCursor<Document> getByBookTitlePublication(@PathVariable String publication)
 				{
 					MongoCursor<Document> bookTitleDocs=null;
@@ -69,7 +69,7 @@ public class BookTitleController
 					return bookTitleDocs;
 					
 				}
-	*/
+	
 				//asking to show the the deatils of all bookTilte fields later on to save it
 				@RequestMapping(value="/edit/{bookTitleID}",method=RequestMethod.GET)
 				public Document showBookTitleFull(@PathVariable String bookTitleID)
