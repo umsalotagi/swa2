@@ -250,8 +250,14 @@ public class BookTitleRead implements BookTitleReadIn {
 		MongoCollection<Document> collection = database.getCollection(BookTitle);
 	//	collection.find(eq(books_bookID, _bookId)).projection(projectionBasicProperties).first();
 		try {
-			return collection.find(eq(books_bookID,_bookID)).projection(fields(include(books_borrowedBy))).first().getString(books_borrowedBy);
+			ArrayList<Document> b = (ArrayList<Document>) collection.find(new Document(books_bookID,_bookID)).projection(new Document ("Books.borrowedBy",1)).first().get("Books");
+			
+			System.out.println(collection.find(new Document(books_bookID,_bookID)).projection(fields(include("Books.borrowedBy"))).first().getString("borrowedBy"));
+		//	System.out.println(b.get(0).toJson() + " 99");
+			return b.get(0).getString("borrowedBy");
+			
 		} catch (Exception e) {
+			System.out.println("exception got");
 			e.printStackTrace();
 			return null;
 		}

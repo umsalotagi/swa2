@@ -149,7 +149,7 @@ public class BookTitleReadTest {
 		assertEquals(btr.findByBookId("18A.1").getString(bookTitleID) + " ID success", "18A", btr.findByBookId("18A.1").getString(bookTitleID));
 		
 		System.out.println(btr.findByBookId("18A.1").getString(bookTitleID) + " ID success3");
-		assertEquals("p01", btr.isBookAvailable("18A.1"));
+		assertEquals("p02", btr.isBookAvailable("18A.1"));
 		
 		//btr.findByBookId("18A.1").getString(key)
 		
