@@ -26,7 +26,7 @@ public class BookTitleController
 	}
 	
 	//searching by bookTitleTag
-		@RequestMapping(value="/searchBy/{tag}",method=RequestMethod.GET)
+	/*	@RequestMapping(value="/searchBy/{tag}",method=RequestMethod.GET)
 		public MongoCursor<Document> getByBookTitleTag(@PathVariable String tag)
 		{
 			MongoCursor<Document> bookTitleDocs=null;
@@ -69,7 +69,7 @@ public class BookTitleController
 					return bookTitleDocs;
 					
 				}
-	
+	*/
 				//asking to show the the deatils of all bookTilte fields later on to save it
 				@RequestMapping(value="/edit/{bookTitleID}",method=RequestMethod.GET)
 				public Document showBookTitleFull(@PathVariable String bookTitleID)
