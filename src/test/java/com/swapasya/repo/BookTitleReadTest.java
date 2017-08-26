@@ -115,5 +115,17 @@ public class BookTitleReadTest {
 		
 		assertEquals("18A", btr.findByBookId("18A.4").getString(bookTitleID));
 	}
+	
+	@Test
+	public void removeBookFromBookTitle() {
+		btr.removeBookFromBookTitle("18A", "18A.4");
+		
+		assertTrue(btr.findByBookId("18A.4")==null);
+		
+		btr.removeBookFromBookTitle("18A", "18A.7");
+		
+		assertTrue(btr.findByBookId("18A.7")==null);
+	}
+	
 
 }
