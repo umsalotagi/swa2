@@ -66,7 +66,7 @@ public class TransactionHistoryRead implements TransactionHistoryReadIn {
 	@Override
 	public void delete(String transactionID) {
 		// TODO Auto-generated method stub
-		collection.deleteOne(eq("_ID", transactionID));	
+//		collection.deleteOne(eq("_ID", transactionID));	...Not to implement
 	}
 
 	@Override
@@ -86,20 +86,21 @@ public class TransactionHistoryRead implements TransactionHistoryReadIn {
 	
 
 	@Override
-	public long countFromTo(Date x, Date y) {
-		// TODO Auto-generated method stub
+	public long countFromTo(Date startDate, Date endDate) {
+		// TODO Auto-generated method stubi
 //		ArrayList<Date>=
 				
-		String s = x.toString();
-		String e = y.toString();
-		LocalDate start = LocalDate.parse(s);
-		LocalDate end = LocalDate.parse(e);
-		List<LocalDate> totalDates = new ArrayList<>();
-		while (!start.isAfter(end)) {
-		    totalDates.add(start);
-		    start = start.plusDays(1);
-		}
-		 return collection.count(eq(dateOfIssue,totalDates));
+//		String s = x.toString();
+//		String e = y.toString();
+//		LocalDate start = LocalDate.parse(s);
+//		LocalDate end = LocalDate.parse(e);
+//		List<LocalDate> totalDates = new ArrayList<>();
+//		while (!start.isAfter(end)) {
+//		    totalDates.add(start);
+//		    start = start.plusDays(1);
+//		}
+//		 return collection.count(eq(dateOfIssue,totalDates));
+		return collection.count(and(gte(dateOfReturn,startDate),lt(dateOfReturn,endDate)));
 	}
 
 	@Override
