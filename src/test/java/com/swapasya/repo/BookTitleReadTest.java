@@ -139,6 +139,14 @@ public class BookTitleReadTest {
 		
 		assertEquals("18A", btr.findInWaitList("p02", "18A.1"));
 		
+		btr.removeFromWaitList("p01", "18A.1");
+		
+		assertEquals(null, btr.findInWaitList("p01", "18A.1"));
+		
+		btr.removeFromWaitList("p01", "18A.1");
+		
+		assertEquals(null, btr.findInWaitList("p01", "18A.1"));
+		
 	}
 	
 	@Test
@@ -146,7 +154,7 @@ public class BookTitleReadTest {
 		
 		btr.issueBookToPerson("18A.1", "p02", "NormalIssue", new Date(), null);
 		
-		assertEquals(btr.findByBookId("18A.1").getString(bookTitleID) + " ID success", "18A", btr.findByBookId("18A.1").getString(bookTitleID));
+		assertEquals(btr.findByBookId("18A.1").getString(bookTitleID) + " ID success", "18A", btr.findByBookId("18A.1").getString(bookTitleID) );
 		
 		System.out.println(btr.findByBookId("18A.1").getString(bookTitleID) + " ID success3");
 		assertEquals("p02", btr.isBookAvailable("18A.1"));
@@ -155,5 +163,28 @@ public class BookTitleReadTest {
 		
 	}
 	
+	@Test
+	public void issueBookToPersonSCID () {
+		
+//		btr.issueBookToPerson("18A.2", "p02", "NormalIssue", new Date(), null);
+//		assertEquals("p02", btr.isBookAvailable("18A.2"));
+	}
+	
+	
+	@Test
+	public void issueBookToPersonSCID2 () {
+		
+	//	btr.tempDeleteAddToAssignList("p01", "18A.2");
+		
+		
+		
+		btr.issueBookToPersonACID("18A.2", "p01", "NormalIssue", new Date(), null);
+		System.out.println(btr.isBookAvailable("18A.2") + " strrrr");
+		System.out.println(btr.isBookAvailable("18A.1") + " strrrr");
+		System.out.println(btr.isBookAvailable("19A.2") + " strrrr");
+		
+		assertEquals("p01", btr.isBookAvailable("18A.2"));
+		
+	}
 
 }

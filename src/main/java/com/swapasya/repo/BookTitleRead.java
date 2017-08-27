@@ -250,9 +250,9 @@ public class BookTitleRead implements BookTitleReadIn {
 		MongoCollection<Document> collection = database.getCollection(BookTitle);
 	//	collection.find(eq(books_bookID, _bookId)).projection(projectionBasicProperties).first();
 		try {
-			ArrayList<Document> b = (ArrayList<Document>) collection.find(new Document(books_bookID,_bookID)).projection(new Document ("Books.borrowedBy",1)).first().get("Books");
+			ArrayList<Document> b = (ArrayList<Document>) collection.find(new Document(books_bookID,_bookID)).projection(new Document ("Books.$.borrowedBy",1)).first().get("Books");
 			
-			System.out.println(collection.find(new Document(books_bookID,_bookID)).projection(fields(include("Books.borrowedBy"))).first().getString("borrowedBy"));
+			System.out.println(collection.find(new Document(books_bookID,_bookID)).projection(new Document ("Books.$.borrowedBy",1)).first().toJson()   + " issueBookToPerson");
 		//	System.out.println(b.get(0).toJson() + " 99");
 			return b.get(0).getString("borrowedBy");
 			
@@ -265,6 +265,23 @@ public class BookTitleRead implements BookTitleReadIn {
 		
 	}
 	
+	public String bookIssedTo (String _bookID) {
+		MongoCollection<Document> collection = database.getCollection(BookTitle);
+		//	collection.find(eq(books_bookID, _bookId)).projection(projectionBasicProperties).first();
+			try {
+				ArrayList<Document> b = (ArrayList<Document>) collection.find(new Document(books_bookID,_bookID)).projection(new Document ("Books.$.borrowedBy",1)).first().get("Books");
+				
+				System.out.println(collection.find(new Document(books_bookID,_bookID)).projection(fields(include("Books.borrowedBy"))).first().getString("borrowedBy"));
+			//	System.out.println(b.get(0).toJson() + " 99");
+				return b.get(0).getString("borrowedBy");
+				
+			} catch (Exception e) {
+				System.out.println("exception got");
+				e.printStackTrace();
+				return null;
+			}
+	}
+	
 	public void issueBookToPerson (String _bookID, String _personID, String _issuedType, Date _issueDate, Date _expectedReturnDate) {
 		
 		MongoCollection<Document> collection = database.getCollection(BookTitle);
@@ -275,6 +292,40 @@ public class BookTitleRead implements BookTitleReadIn {
 		
 	}
 	
+	
+	public void issueBookToPersonACID (String _bookID, String _personID, String _issuedType, Date _issueDate, Date _expectedReturnDate) {
+		
+		MongoCollection<Document> collection = database.getCollection(BookTitle);
+	//	collection.updateOne(eq(books_bookID,_bookID), new Document ("$push", new Document ("Books.$.")));
+		
+//		collection.updateOne(new Document (books_bookID, _bookID),  new Document ("$set", new Document ("Books.$.borrowedBy", _personID)
+//				.append("Books.$.issuedType", _issuedType)));
+		//.append(AssignList, new Document("$pull", new Document (assignList, new Document(s_personID, _personID))))
+//		System.out.println(collection.find(new Document(books_bookID,_bookID)).first().toJson() + " newwwwwww");
+//		collection.updateOne(
+//				new Document (books_bookID, _bookID), 
+//				new Document ("$set", new Document("Books", 
+//						new Document ("$.borrowedBy", _personID).append("$.issuedType", _issuedType))
+//						));
+		Document updateBk = new Document ("$set", new Document ("Books.$.borrowedBy", _personID).append("Books.$.issuedType", _issuedType));
+		Document updateBk2 = new Document ("Books.$.borrowedBy", _personID).append("Books.$.issuedType", _issuedType);
+		Document pullAssignList = new Document("$pull", new Document (assignList, new Document(s_personID, _personID)));
+		Document pullAssignList2 = new Document (assignList, new Document(s_personID, _personID));
+		
+		collection.updateOne(new Document (books_bookID, _bookID), new Document ("$set",updateBk2).append("$pull", pullAssignList2));
+		
+		
+	//	collection.fin
+		
+	}
+	
+	public void tempDeleteAddToAssignList (String _personID, String _bookID) {
+		MongoCollection<Document> collection = database.getCollection(BookTitle);
+
+		collection.updateOne(eq(books_bookID, _bookID), new Document("$push", new Document (assignList, new Document(s_personID, _personID).append(s_timestamp, new Date().getTime()))));
+	
+
+	}
 	
 	public void addBookToBookTitle (String _bookTitleID, Document book) {
 		
