@@ -7,6 +7,7 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Projections;
+import com.mongodb.client.model.Accumulators;
 import com.mongodb.client.model.Aggregates;
 import com.mongodb.client.model.CountOptions;
 import com.mongodb.client.model.Filters;
@@ -246,16 +247,62 @@ public class BookTitleRead implements BookTitleReadIn {
 		
 		MongoCollection<Document> collection = database.getCollection(BookTitle);
 		
-		ArrayList k = new ArrayList<>();
+		try {
+			List<Integer> i = collection.aggregate(Arrays.asList(Aggregates.project(Projections.computed("followersCount",Projections.computed("$size", "$Books")))))
+					.map(follower -> follower.getInteger("followersCount")).into(new ArrayList<>());
+			System.out.println(i.size() + " this is lineeeee");
+			for (int ii: i) {
+				System.out.println (ii + " this is actual size of array");
+			}
+		} catch (Exception e ) {
+			e.printStackTrace();
+		}
 		
-		collection.aggregate(Arrays.asList(Aggregates.project(Projections.computed("followersCount",Projections.computed("$size", "$Books")))))
-			.map(follower -> follower.getInteger("followersCount")).into(k);
+		try {
+		//	AggregateIterable<Document> d=  collection.aggregate(Arrays.asList(Aggregates.match(eq(bookTitleID, _bookTitleID)),Aggregates.project(Projections.fields(Projections.computed("firstCate", new Document ("$sum", Arrays.asList("categoryType")))))));
+			
+			AggregateIterable<Document> d=  collection.aggregate(Arrays.asList(Aggregates.match(eq(bookTitleID, _bookTitleID)),Aggregates.project(Projections.computed("firstCate",Projections.computed("$size", "$Books")))));
+					List<Integer> i =		d.map(follower -> follower.getInteger("firstCate")).into(new ArrayList<>());
+			System.out.println(i.size() + " this is lineeeee33");
+			for (int ii: i) {
+				System.out.println (ii + " this is actual size of array");
+				return ii;
+			}
+			for (Document dd: d) {
+				System.out.println(dd.toJson());
+			}
+			
+		} catch (Exception e ) {
+			e.printStackTrace();
+		}
 		
-		System.out.println(k.size()+ "size of books");
+		try {
+			AggregateIterable<Document> d= collection.aggregate(Arrays.asList(Aggregates.match(eq(bookTitleID, _bookTitleID)), Aggregates.group("$Books", Accumulators.sum("count", 1))));
+			List<Integer> i =		d.map(follower -> follower.getInteger("count")).into(new ArrayList<>());
+			System.out.println(i.size() + " this is lineeeee44");
+			for (int ii: i) {
+				System.out.println (ii + " this is oneeeeee44");
+			}
+			
+			for (Document dd: d) {
+				System.out.println(dd.toJson() + "  in list");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		
+
 		
 		AggregateIterable<Document> d= collection.aggregate(Arrays.asList(Aggregates.project(Projections.computed("followersCount",Projections.computed("$size", "$Books")))));
+		List<Integer> i = d.map(follower -> follower.getInteger("followersCount")).into(new ArrayList<>());
 		
-		return k.size();
+		System.out.println(i.size() + " this is lineeeee2");
+		for (int ii: i) {
+			System.out.println (ii + " this is oneeeeee2");
+		}
+		
+		return -1;
 	//	System.out.println(D.);
 		
 	}
