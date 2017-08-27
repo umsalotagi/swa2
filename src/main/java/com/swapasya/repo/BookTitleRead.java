@@ -1,11 +1,13 @@
 package com.swapasya.repo;
 
 import com.mongodb.*;
+import com.mongodb.client.AggregateIterable;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Projections;
+import com.mongodb.client.model.Aggregates;
 import com.mongodb.client.model.CountOptions;
 import com.mongodb.client.model.Filters;
 import static com.mongodb.client.model.Filters.*;
@@ -240,46 +242,51 @@ public class BookTitleRead implements BookTitleReadIn {
 		
 	}
 	
+	public long countBooksInGivenTitle (String _bookTitleID) {
+		
+		MongoCollection<Document> collection = database.getCollection(BookTitle);
+		
+		ArrayList k = new ArrayList<>();
+		
+		collection.aggregate(Arrays.asList(Aggregates.project(Projections.computed("followersCount",Projections.computed("$size", "$Books")))))
+			.map(follower -> follower.getInteger("followersCount")).into(k);
+		
+		System.out.println(k.size()+ "size of books");
+		
+		AggregateIterable<Document> d= collection.aggregate(Arrays.asList(Aggregates.project(Projections.computed("followersCount",Projections.computed("$size", "$Books")))));
+		
+		return k.size();
+	//	System.out.println(D.);
+		
+	}
+
+//	public long countBkIssuedTo (String _personID, String _issuedType) {
+//		
+//		MongoCollection<Document> collection = database.getCollection(BookTitle);
+//		return collection.count(and (eq(books_borrowedBy, _personID), eq(books_issuedType, _issuedType)));
+//		
+//	}
+//	
+//	public long countBkIssuedTo (String _personID, String _issuedType) {
+//		
+//		MongoCollection<Document> collection = database.getCollection(BookTitle);
+//		return collection.count(and (eq(books_borrowedBy, _personID), eq(books_issuedType, _issuedType)));
+//		
+//	}
+	
+	
 	/**
 	 * 
 	 * @param _bookID
-	 * @return String : personID who has got this book
+	 * @return personID who has got this book
 	 */
-	public String isBookAvailable (String _bookID) {
-		
+	public String personWhomeBookIssued (String _bookID) {
 		MongoCollection<Document> collection = database.getCollection(BookTitle);
-	//	collection.find(eq(books_bookID, _bookId)).projection(projectionBasicProperties).first();
 		try {
-			ArrayList<Document> b = (ArrayList<Document>) collection.find(new Document(books_bookID,_bookID)).projection(new Document ("Books.$.borrowedBy",1)).first().get("Books");
-			
-			System.out.println(collection.find(new Document(books_bookID,_bookID)).projection(new Document ("Books.$.borrowedBy",1)).first().toJson()   + " issueBookToPerson");
-		//	System.out.println(b.get(0).toJson() + " 99");
-			return b.get(0).getString("borrowedBy");
-			
+			return ((ArrayList<Document>) collection.find(new Document(books_bookID,_bookID)).projection(new Document ("Books.$.borrowedBy",1)).first().get("Books")).get(0).getString(BookProp.borrowedBy);
 		} catch (Exception e) {
-			System.out.println("exception got");
-			e.printStackTrace();
 			return null;
 		}
-		
-		
-	}
-	
-	public String bookIssedTo (String _bookID) {
-		MongoCollection<Document> collection = database.getCollection(BookTitle);
-		//	collection.find(eq(books_bookID, _bookId)).projection(projectionBasicProperties).first();
-			try {
-				ArrayList<Document> b = (ArrayList<Document>) collection.find(new Document(books_bookID,_bookID)).projection(new Document ("Books.$.borrowedBy",1)).first().get("Books");
-				
-				System.out.println(collection.find(new Document(books_bookID,_bookID)).projection(fields(include("Books.borrowedBy"))).first().getString("borrowedBy"));
-			//	System.out.println(b.get(0).toJson() + " 99");
-				return b.get(0).getString("borrowedBy");
-				
-			} catch (Exception e) {
-				System.out.println("exception got");
-				e.printStackTrace();
-				return null;
-			}
 	}
 	
 	public void issueBookToPerson (String _bookID, String _personID, String _issuedType, Date _issueDate, Date _expectedReturnDate) {
@@ -296,36 +303,18 @@ public class BookTitleRead implements BookTitleReadIn {
 	public void issueBookToPersonACID (String _bookID, String _personID, String _issuedType, Date _issueDate, Date _expectedReturnDate) {
 		
 		MongoCollection<Document> collection = database.getCollection(BookTitle);
-	//	collection.updateOne(eq(books_bookID,_bookID), new Document ("$push", new Document ("Books.$.")));
-		
-//		collection.updateOne(new Document (books_bookID, _bookID),  new Document ("$set", new Document ("Books.$.borrowedBy", _personID)
-//				.append("Books.$.issuedType", _issuedType)));
-		//.append(AssignList, new Document("$pull", new Document (assignList, new Document(s_personID, _personID))))
-//		System.out.println(collection.find(new Document(books_bookID,_bookID)).first().toJson() + " newwwwwww");
-//		collection.updateOne(
-//				new Document (books_bookID, _bookID), 
-//				new Document ("$set", new Document("Books", 
-//						new Document ("$.borrowedBy", _personID).append("$.issuedType", _issuedType))
-//						));
-		Document updateBk = new Document ("$set", new Document ("Books.$.borrowedBy", _personID).append("Books.$.issuedType", _issuedType));
+
 		Document updateBk2 = new Document ("Books.$.borrowedBy", _personID).append("Books.$.issuedType", _issuedType);
-		Document pullAssignList = new Document("$pull", new Document (assignList, new Document(s_personID, _personID)));
 		Document pullAssignList2 = new Document (assignList, new Document(s_personID, _personID));
 		
 		collection.updateOne(new Document (books_bookID, _bookID), new Document ("$set",updateBk2).append("$pull", pullAssignList2));
 		
-		
-	//	collection.fin
+	}
+	
+	public void returnBookACID () {
 		
 	}
 	
-	public void tempDeleteAddToAssignList (String _personID, String _bookID) {
-		MongoCollection<Document> collection = database.getCollection(BookTitle);
-
-		collection.updateOne(eq(books_bookID, _bookID), new Document("$push", new Document (assignList, new Document(s_personID, _personID).append(s_timestamp, new Date().getTime()))));
-	
-
-	}
 	
 	public void addBookToBookTitle (String _bookTitleID, Document book) {
 		

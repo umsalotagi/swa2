@@ -157,7 +157,7 @@ public class BookTitleReadTest {
 		assertEquals(btr.findByBookId("18A.1").getString(bookTitleID) + " ID success", "18A", btr.findByBookId("18A.1").getString(bookTitleID) );
 		
 		System.out.println(btr.findByBookId("18A.1").getString(bookTitleID) + " ID success3");
-		assertEquals("p02", btr.isBookAvailable("18A.1"));
+		assertEquals("p02", btr.personWhomeBookIssued("18A.1"));
 		
 		//btr.findByBookId("18A.1").getString(key)
 		
@@ -167,7 +167,7 @@ public class BookTitleReadTest {
 	public void issueBookToPersonSCID () {
 		
 //		btr.issueBookToPerson("18A.2", "p02", "NormalIssue", new Date(), null);
-//		assertEquals("p02", btr.isBookAvailable("18A.2"));
+//		assertEquals(false, btr.isBookAvailable("18A.2"));
 	}
 	
 	
@@ -179,12 +179,17 @@ public class BookTitleReadTest {
 		
 		
 		btr.issueBookToPersonACID("18A.2", "p01", "NormalIssue", new Date(), null);
-		System.out.println(btr.isBookAvailable("18A.2") + " strrrr");
-		System.out.println(btr.isBookAvailable("18A.1") + " strrrr");
-		System.out.println(btr.isBookAvailable("19A.2") + " strrrr");
+		System.out.println(btr.personWhomeBookIssued("18A.2") + " strrrr");
+		System.out.println(btr.personWhomeBookIssued("18A.1") + " strrrr");
+		System.out.println(btr.personWhomeBookIssued("19A.2") + " strrrr");
 		
-		assertEquals("p01", btr.isBookAvailable("18A.2"));
+		assertEquals("p01", btr.personWhomeBookIssued("18A.2"));
 		
+	}
+	
+	@Test
+	public void countBooksInTitle () {
+		assertEquals(2, btr.countBooksInGivenTitle("18A"));
 	}
 
 }
