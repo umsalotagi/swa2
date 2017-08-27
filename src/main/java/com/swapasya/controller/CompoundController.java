@@ -143,31 +143,52 @@ public class CompoundController {
 	
 	public void issueBook (String _bookID, String _personID, String _issueType) {
 		
-		PersonRead pr = new PersonRead("");
+		String database = "test12";
+		
+		PersonRead pr = new PersonRead(database);
+		
+		String role = pr.getPersonRole(_personID);
+		if (role==null) {
+			// invalid person name as exh person has mandatory role name
+			return;
+		}
 		
 		
-		LibraryRulesRead lr = new LibraryRulesRead("");
-		Document rules = lr.findRulesFor(pr.getPersonRole(_personID), _issueType);
+		LibraryRulesRead lr = new LibraryRulesRead(database);
+		Document rules = lr.findRulesFor(role, _issueType);
 		
+		if (rules==null) {
+			// Rules are not set 
+			
+			
+		}
 		
-		
-		BookTitleRead btr = new BookTitleRead("");
+		BookTitleRead btr = new BookTitleRead(database);
 		if ( (int)btr.countBkIssuedTo(_personID, _issueType) >= rules.getInteger(RulesProp.maxQuantity, 50)) {
 			// max qty number reached
 			return;
 		}
 		
-		if (btr.isBookAvailable(_bookID)!=null) {
-			// book is already issued
+		try {
+			if (btr.personWhomeBookIssued(_bookID)!=null) {
+				// book is already issued
+				return;
+			}
+		} catch (Exception e) {
+			// null pointer exception may occur as we do arraylist operate
+			// inavalid bookID
 			return;
 		}
 		
-		Date x = new Date ();
+		
+
+		rules.getInteger(RulesProp.dayLimit);
+		
+		Date expectedReturn = new Date ();
 		
 		// update book Fields
-		btr.issueBookToPerson(_bookID, _personID, _issueType, x, x);
+		btr.issueBookToPersonACID(_bookID, _personID, _issueType,  new Date (), expectedReturn);
 		
-		// remove from assign list
 		
 		
 		
