@@ -243,6 +243,14 @@ public class BookTitleRead implements BookTitleReadIn {
 		
 	}
 	
+	
+	public long countAllBkIssuedTo (String _personID) {
+		
+		MongoCollection<Document> collection = database.getCollection(BookTitle);
+		return collection.count(eq(books_borrowedBy, _personID));
+		
+	}
+	
 	public long countBooksInGivenTitle (String _bookTitleID) {
 		
 		MongoCollection<Document> collection = database.getCollection(BookTitle);
@@ -291,35 +299,42 @@ public class BookTitleRead implements BookTitleReadIn {
 			e.printStackTrace();
 		}
 		
-		
-
-		
-		AggregateIterable<Document> d= collection.aggregate(Arrays.asList(Aggregates.project(Projections.computed("followersCount",Projections.computed("$size", "$Books")))));
-		List<Integer> i = d.map(follower -> follower.getInteger("followersCount")).into(new ArrayList<>());
-		
-		System.out.println(i.size() + " this is lineeeee2");
-		for (int ii: i) {
-			System.out.println (ii + " this is oneeeeee2");
-		}
-		
 		return -1;
 	//	System.out.println(D.);
 		
 	}
 
-//	public long countBkIssuedTo (String _personID, String _issuedType) {
-//		
-//		MongoCollection<Document> collection = database.getCollection(BookTitle);
-//		return collection.count(and (eq(books_borrowedBy, _personID), eq(books_issuedType, _issuedType)));
-//		
-//	}
-//	
-//	public long countBkIssuedTo (String _personID, String _issuedType) {
-//		
-//		MongoCollection<Document> collection = database.getCollection(BookTitle);
-//		return collection.count(and (eq(books_borrowedBy, _personID), eq(books_issuedType, _issuedType)));
-//		
-//	}
+	public long countWaitListedPersons (String _bookTitleID) {
+		MongoCollection<Document> collection = database.getCollection(BookTitle);
+		return collection.aggregate(Arrays.asList(Aggregates.match(eq(bookTitleID, _bookTitleID)),Aggregates.project(Projections
+				.computed("firstCate",Projections.computed("$size", "$WaitList")))))
+				.map(follower -> follower.getInteger("firstCate")).into(new ArrayList<>()).get(0);
+		
+	}
+	
+	public long countAssignListedPersons (String _bookTitleID) {
+		
+		MongoCollection<Document> collection = database.getCollection(BookTitle);
+		return collection.aggregate(Arrays.asList(Aggregates.match(eq(bookTitleID, _bookTitleID)),Aggregates.project(Projections
+				.computed("firstCate",Projections.computed("$size", "$AssignList")))))
+				.map(follower -> follower.getInteger("firstCate")).into(new ArrayList<>()).get(0);
+		
+	}
+	
+	public void clearWaitList (String _bookTitleID) {
+		MongoCollection<Document> collection = database.getCollection(BookTitle);
+		collection.updateOne(eq(bookTitleID, _bookTitleID), new Document ("$set", new Document (waitList, null)));
+	}
+	
+	public void clearAssignList (String _bookTitleID) {
+		MongoCollection<Document> collection = database.getCollection(BookTitle);
+		collection.updateOne(eq(bookTitleID, _bookTitleID), new Document ("$set", new Document (assignList, null)));
+	}
+	
+	public void updateBookTitle (Document doc) {
+		MongoCollection<Document> collection = database.getCollection(BookTitle);
+		collection.updateOne(eq(bookTitleID, doc.getString(bookTitleID)), new Document ("$set", doc));
+	}
 	
 	
 	/**

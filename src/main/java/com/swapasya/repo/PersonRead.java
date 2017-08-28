@@ -17,7 +17,7 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
 
-public class PersonRead implements PersonIn {
+public class PersonRead implements PersonReadIn {
 	MongoDatabase database;
 	MongoCollection<Document> collection;
 

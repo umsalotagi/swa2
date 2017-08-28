@@ -27,6 +27,18 @@ public class DocumemtRepository {
 				.append(location, _location).append(imgPath, _imgPath);
 
 	}
+	
+	
+	public static Document emptyListBookTitleForEditingBkTitle(String _bookTitleID, String _isbnNumber, String _bookName, String _author,
+			String _publication, String _bindingType, ArrayList<String> _tags, int _noOfPages, String _language,
+			String _location, String _imgPath) {
+
+		return new Document(bookTitleID, _bookTitleID).append(isbnNumber, _isbnNumber).append(bookName, _bookName)
+				.append(author, _author).append(publication, _publication).append(bindingType, _bindingType)
+				.append(tags, _tags).append(noOfPages, _noOfPages).append(language, _language)
+				.append(location, _location).append(imgPath, _imgPath);
+
+	}
 
 	public static Document book(String _bookID, Date _purchaseDate, double _price, String _categoryType) {
 

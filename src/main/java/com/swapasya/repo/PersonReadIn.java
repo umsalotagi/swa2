@@ -6,7 +6,7 @@ package com.swapasya.repo;
 import org.bson.Document;
 import com.mongodb.client.MongoCursor;
 
-public interface PersonIn {
+public interface PersonReadIn {
 	
 // Read Operations
 	
