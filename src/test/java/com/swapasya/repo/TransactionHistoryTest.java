@@ -33,6 +33,16 @@ public class TransactionHistoryTest {
 	      return cal.getTime();
 		}	
 	
+	public static  Date forToday(){
+	      Calendar cal = Calendar.getInstance();
+	      int year=cal.get(cal.YEAR);
+	      int month=cal.get(cal.MONTH);
+	      int date=cal.get(cal.DATE);
+	      cal.set(year, month, date,0,0);
+	      System.out.println("SET time to: "+cal.getTime());
+	      return cal.getTime();
+		}
+	
 	public static  Date addDays(Date date){
 	      Calendar cal = Calendar.getInstance();
 	      cal.setTime(date);
@@ -46,6 +56,7 @@ public class TransactionHistoryTest {
 	      cal.setTime(date);
 	      cal.add(Calendar.DATE, days);
 	      return cal.getTime();
+	      
 		}
 	
 	Date date1= provideDate(2017,7,27);
@@ -79,8 +90,24 @@ public class TransactionHistoryTest {
 	}
 	
 	@Test
-	public void acount() {
+	public void count() {
 		assertEquals("Asserting count: ", 3,thr.count());
+	}
+	
+	@Test
+	public void countToday() {
+		MongoCursor<Document> cur = thr.findByDateOfReturn(date3,date4);
+		int x=0;
+//		System.out.println(date3 +" | " + date4 );
+		System.out.println("Todays date: "+ forToday());
+
+		while (cur.hasNext()) {
+			Document d = cur.next();
+			System.out.println(d.getDate(dateOfReturn).toString()+" "+d.getString("bookID"));	
+			x++;
+		}
+		
+		assertEquals(1, x);
 	}
 		
 	@Test
@@ -100,24 +127,22 @@ public class TransactionHistoryTest {
 		
 	}	
 	
-//	@Test
-//	public void findByDateOfIssue() {
-//  
-//        
-//		
-//		MongoCursor<Document> cur = thr.findByDateOfIssue(date1,date2);
-//		int x=0;
-//		System.out.println(date1 +" | " + date2);
-//
-//		while (cur.hasNext()) {
-//			Document d = cur.next();
-//			System.out.println(d.getDate(dateOfIssue).toString()+" "+d.getString("bookID"));	
-//			x++;
-//		}
-//		
-//		assertEquals(2, x);
-//		
-//	}
+	@Test
+	public void findByDateOfIssue() {
+  	
+		MongoCursor<Document> cur = thr.findByDateOfIssue(date1,date2);
+		int x=0;
+		System.out.println(date1 +" | " + date2);
+
+		while (cur.hasNext()) {
+			Document d = cur.next();
+			System.out.println(d.getDate(dateOfIssue).toString()+" "+d.getString("bookID"));	
+			x++;
+		}
+		
+		assertEquals(2, x);
+		
+	}
 	
 	
 	@Test
@@ -127,11 +152,10 @@ public class TransactionHistoryTest {
 		
 		MongoCursor<Document> cur = thr.findByDateOfReturn(date3,date4);
 		int x=0;
-		System.out.println(date3 +" | " + date4 );
+//		System.out.println(date3 +" | " + date4 );
 
 		while (cur.hasNext()) {
 			Document d = cur.next();
-			//System.out.println(d.getDate(dateOfReturn));
 			System.out.println(d.getDate(dateOfReturn).toString()+" "+d.getString("bookID"));	
 			x++;
 		}
@@ -139,11 +163,22 @@ public class TransactionHistoryTest {
 		assertEquals(1, x);
 		
 	}
+	
+	@Test
+	public void countReturnedFromTo() {
+		
+		Date date1=  provideDate(2017,7,27);
+		Date date2=  provideDate(2017,8,4);
+		System.out.println("counts for retuen in: "+ date1+" ! "+date2);
+		long x= thr.countFromTo(date1, date2);
+		
+		assertEquals(2, x);
+		
+	}
 		
 	@Test
 	public void findCompound() {
-  
-		
+ 
 		MongoCursor<Document> cur = thr.findCompound("Normal",null,null,null,null,"1111",null,null,null,null,null);
 		int x=0;
 	while (cur.hasNext()) {
