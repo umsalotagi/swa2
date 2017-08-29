@@ -22,13 +22,10 @@ public interface UnRegisteredPersonIn {
 		
 		Document findByPersonId(String personId);
 
-		MongoCursor<Document> setFilterFindAll ();
+	//	MongoCursor<Document> setFilterFindAll ();
 		
 		MongoCursor<Document> setFilterAndFindByPersonName(String personName);
 		
-		void validateUnRegisteredPerson (String personID) ;
-		
-		void validateUnRegisteredPerson (String rollNo, String courseYear, String name) ;
 		
 	// Write Operations
 		
