@@ -27,18 +27,6 @@ public class DocumemtRepository {
 				.append(location, _location).append(imgPath, _imgPath);
 
 	}
-	
-	
-	public static Document emptyListBookTitleForEditingBkTitle(String _bookTitleID, String _isbnNumber, String _bookName, String _author,
-			String _publication, String _bindingType, ArrayList<String> _tags, int _noOfPages, String _language,
-			String _location, String _imgPath) {
-
-		return new Document(bookTitleID, _bookTitleID).append(isbnNumber, _isbnNumber).append(bookName, _bookName)
-				.append(author, _author).append(publication, _publication).append(bindingType, _bindingType)
-				.append(tags, _tags).append(noOfPages, _noOfPages).append(language, _language)
-				.append(location, _location).append(imgPath, _imgPath);
-
-	}
 
 	public static Document book(String _bookID, Date _purchaseDate, double _price, String _categoryType) {
 
@@ -57,20 +45,33 @@ public class DocumemtRepository {
 		return new Document(s_personID, _personID).append(s_timestamp, _timestamp);
 	}
 
-	public static Document person (String _personID, String _password, String _firstName, String _lastName,
-			Document _address, String _emailId, String _mobileNo, String _degree, String _branch, int _courseyear, int _rollNo, String _role, Date _admissionDate, String _parentName, String _parentContact) {
+	public static Document person (String _personID, String _password, String _firstName,  String _middleName, String _lastName,
+			Document _currentAddress, Document _permanentAddress, String _emailId, String _mobileNo, String _degree, String _branch, 
+			int _courseyear, int _rollNo, String _division, String _role, Date _admissionDate, String _parentName, String _parentContact,
+			String _accessType, String _readerType) {
 
 		// boolean auth = db.authenticate(myUserName, myPassword);
 		// System.out.println("Authentication: "+auth);
 
-		return new Document(PersonProp.personID, _personID)
-				.append(PersonProp.password, _password).append(PersonProp.personName, _firstName  + " " +_lastName)
-				.append(PersonProp.address, _address).append(PersonProp.emailId, _emailId)
+		Document doc =  new Document(PersonProp.personID, _personID)
+				.append(PersonProp.password, _password).append(PersonProp.personName, _firstName  + " " + _middleName + " "+_lastName)
+				.append(PersonProp.currentAddress, _currentAddress).append(PersonProp.permanentAddress, _permanentAddress)
+				.append(PersonProp.emailId, _emailId)
 				.append(PersonProp.mobileNo, _mobileNo).append(PersonProp.degree, _degree)
 				.append(PersonProp.parentName, _parentName).append(PersonProp.parentContact, _parentContact)
-				.append(PersonProp.branch, _branch).append(PersonProp.courseyear, _courseyear)
+				.append(PersonProp.courseyear, _courseyear)
 				.append(PersonProp.rollNo, _rollNo).append(PersonProp.role, _role)
-				.append(PersonProp.admissionDate, _admissionDate);
+				.append(PersonProp.admissionDate, _admissionDate).append(PersonProp.accessType, _accessType).append(PersonProp.readerType, _readerType);
+		
+		if (_division != null) {
+			doc.append(PersonProp.division, _division);
+		}
+		
+		if (_branch!=null) {
+			doc.append(PersonProp.branch, _branch);
+		}
+		
+		return doc;
 
 	}
 	
