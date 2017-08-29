@@ -1,9 +1,15 @@
 package com.swapasya.repo;
 
+import static com.mongodb.client.model.Filters.eq;
+import static com.mongodb.client.model.Filters.regex;
 import static com.mongodb.client.model.Projections.fields;
 import static com.mongodb.client.model.Projections.include;
-import static com.swapasya.dataTypes.NameKinds.Person;
+import static com.swapasya.dataTypes.NameKinds.UnRegisteredPerson;
+import static com.swapasya.dataTypes.PersonProp.personID;
+import static com.swapasya.dataTypes.PersonProp.personName;
 import static com.swapasya.dataTypes.UnRegisteredPersonProp.*;
+
+import java.util.regex.Pattern;
 
 import org.bson.Document;
 import org.bson.conversions.Bson;
@@ -29,13 +35,12 @@ public class UnRegisteredPerson implements UnRegisteredPersonIn{
 			database = mongoClient.getDatabase(databaseName);
 		}
 
-		collection = database.getCollection(Person);
+		collection = database.getCollection(UnRegisteredPerson);
 	}
 	
 	@Override
 	public long count() {
-		// TODO Auto-generated method stub
-		return 0;
+		return collection.count();
 	}
 
 	@Override
@@ -69,15 +74,14 @@ public class UnRegisteredPerson implements UnRegisteredPersonIn{
 	}
 
 	@Override
-	public MongoCursor<Document> findByPersonName(String personName) {
-		// TODO Auto-generated method stub
-		return null;
+	public MongoCursor<Document> findByPersonName(String _personName) {
+		return collection.find(regex(personName, Pattern.compile(_personName, Pattern.CASE_INSENSITIVE)))
+				.projection(projectionBasicProperties).iterator();
 	}
 
 	@Override
-	public Document findByPersonId(String personId) {
-		// TODO Auto-generated method stub
-		return null;
+	public Document findByPersonId(String _personId) {
+		return collection.find(eq(personID, _personId)).projection(projectionBasicProperties).first();
 	}
 
 	@Override
@@ -93,7 +97,20 @@ public class UnRegisteredPerson implements UnRegisteredPersonIn{
 	}
 
 	@Override
-	public void insertOne(Document person) {
+	public void insertOne(Document _UnRegisteredPerson) {
+		MongoCollection<Document> collection = database.getCollection(UnRegisteredPerson);
+		collection.insertOne(_UnRegisteredPerson);
+		
+	}
+
+	@Override
+	public void validateUnRegisteredPerson(String personID) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void validateUnRegisteredPerson(String rollNo, String courseYear, String name) {
 		// TODO Auto-generated method stub
 		
 	}

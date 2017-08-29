@@ -26,6 +26,10 @@ public interface UnRegisteredPersonIn {
 		
 		MongoCursor<Document> setFilterAndFindByPersonName(String personName);
 		
+		void validateUnRegisteredPerson (String personID) ;
+		
+		void validateUnRegisteredPerson (String rollNo, String courseYear, String name) ;
+		
 	// Write Operations
 		
 		// Crude preq
