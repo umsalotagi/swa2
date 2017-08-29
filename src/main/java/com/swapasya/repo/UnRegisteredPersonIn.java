@@ -22,6 +22,9 @@ public interface UnRegisteredPersonIn {
 		
 		Document findByPersonId(String personId);
 
+		MongoCursor<Document> setFilterFindAll ();
+		
+		MongoCursor<Document> setFilterAndFindByPersonName(String personName);
 		
 	// Write Operations
 		

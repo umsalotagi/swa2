@@ -1,6 +1,6 @@
 package com.swapasya.dataTypes;
 
-public class UnRegisteredPerson {
+public class UnRegisteredPersonProp {
 	
 	// Person properties has to be very flexible
 	
@@ -16,7 +16,7 @@ public class UnRegisteredPerson {
 	public static final String degree = "degree"; // e.g. BE , ME , MBBS, BA etc.   plus branch
 	public static final String branch = "branch"; // e.g. mechanical,  Hindi etc.
 	public static final String courseyear = "courseyear"; // e.g. year in course e.g. 3rd year, first year
-	//public static final String division = "division";
+	public static final String division = "division";
 	public static final String rollNo = "rollNo"; // e.g. 23 , B45 , A47
 	
 	public static final String parentName = "parentName";
@@ -24,5 +24,9 @@ public class UnRegisteredPerson {
 	
 	public static final String role = "role"; // (e.g student, teacher, topper,principle,HOD)
 	public static final String admissionDate = "admissionDate";
+	
+	public static final String accessType = "accessType"; // (e.g studentAccess, teacherAccess,principle,HOD)
+	public static final String readerType = "readerType"; // (e.g. studentReder, teacherReader, topper, gate etc.
+
 
 }
