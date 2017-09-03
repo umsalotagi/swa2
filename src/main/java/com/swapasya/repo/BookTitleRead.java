@@ -320,6 +320,35 @@ public class BookTitleRead implements BookTitleReadIn {
 		
 	}
 	
+	
+	public long countAvailableBooksInBookTitle (String _bookTitleID) {
+		System.out.println("in count available .....");
+		
+		MongoCollection<Document> collection = database.getCollection(BookTitle);
+		
+		try {
+			int count= collection.aggregate(Arrays.asList(Aggregates.match(eq(bookTitleID, _bookTitleID)),Aggregates.project(
+					new Document (books, new Document ("$filter", new Document ("input", "$Books").append("as", "bookc")
+							.append("cond", new Document ("$eq", Arrays.asList("$$Books.borrowedBy",null))))))))
+					.map(follower -> follower.getInteger("bookc")).into(new ArrayList<>()).get(0);
+			
+			System.out.println(count);
+			
+		} catch (Exception e ) {
+			e.printStackTrace();
+		}
+		
+
+		Document d =  collection.find(and (eq(bookTitleID, _bookTitleID), eq(books_borrowedBy, null)))
+								.projection(new Document ("Books.$",1)).first();
+		
+		System.out.println(d.toJson());
+		
+		return ((ArrayList<Document>) d.get(books)).size();
+		
+		
+	}
+	
 	public long countAssignListedPersons (String _bookTitleID) {
 		
 		MongoCollection<Document> collection = database.getCollection(BookTitle);
@@ -402,9 +431,11 @@ public class BookTitleRead implements BookTitleReadIn {
 				.append("$push", new Document (assignList, toRemove)));
 	}
 	
-	public Document findByBookIdForTransactionHistory (String _bookId) {
+	public Document findByBookIdForReturnAndTransactionHistory (String _bookId) {
 		MongoCollection<Document> collection = database.getCollection(BookTitle);
-		return collection.find(eq(books_bookID, _bookId)).projection(new Document (bookTitleID,1).append(bookName, 1).append(author, 1).append(publication, 1).append("Books.$.expectedReturnDate",1)).first();
+		return collection.find(eq(books_bookID, _bookId)).projection(new Document (bookTitleID,1).append(bookName, 1).append(author, 1)
+				.append(publication, 1).append("Books.$.expectedReturnDate",1).append("Books.$.borrowedBy", 1)
+				.append("Books.$.issuedType", 1).append("Books.$.categoryType", 1)).first();
 	}
 	
 	
@@ -437,6 +468,23 @@ public class BookTitleRead implements BookTitleReadIn {
 		// whether person is valid or not
 
 		Document doc = collection.find(and(eq(books_bookID, _bookID), eq(waitList_personID, _personID)))
+				.projection(new Document(bookTitleID, 1)).first();
+		
+		if (doc==null)
+			return null;
+		
+		return doc.getString(bookTitleID);
+
+	}
+	
+	
+	public String findInAssignList(String _personID, String _bookID) {
+
+		MongoCollection<Document> collection = database.getCollection(BookTitle);
+		
+		// whether person is valid or not
+
+		Document doc = collection.find(and(eq(books_bookID, _bookID), eq(assignList_personID, _personID)))
 				.projection(new Document(bookTitleID, 1)).first();
 		
 		if (doc==null)

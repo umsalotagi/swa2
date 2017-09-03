@@ -16,11 +16,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.swapasya.dataTypes.BookTitleProp;
+import com.swapasya.dataTypes.PersonProp;
 import com.swapasya.dataTypes.RulesProp;
 import com.swapasya.repo.BookTitleRead;
 import com.swapasya.repo.DocumemtRepository;
 import com.swapasya.repo.LibraryRulesRead;
 import com.swapasya.repo.PersonRead;
+import com.swapasya.repo.TransactionHistoryRead;
 
 @RestController
 
@@ -146,16 +149,49 @@ public class CompoundController {
 		String database = "test12";
 		
 		PersonRead pr = new PersonRead(database);
-		
-		String role = pr.getPersonRole(_personID);
-		if (role==null) {
-			// invalid person name as exh person has mandatory role name
+		String readerType = null ;
+		try {
+			// we may need to use reader type instead of reader
+			readerType = pr.getReaderType(_personID);
+			if (readerType==null) {
+				// person hasnot joineded library
+				return;
+			}
+		} catch (Exception e) {
+			// invalid person
 			return;
 		}
 		
 		
+	
+		
 		LibraryRulesRead lr = new LibraryRulesRead(database);
-		Document rules = lr.findRulesFor(role, _issueType);
+		// _issueType  is Normal then we need category type CD/Book/Magazine
+		Document rules = null;
+		
+		BookTitleRead btr = new BookTitleRead(database);
+		
+		// check in assignlist
+		if (btr.findInAssignList(_personID, _bookID)==null) {
+			
+		}
+		
+		
+		
+		
+		Document btReadForIssue = btr.readForIssueBook(_bookID);
+		
+		if (btReadForIssue==null) {
+			// invalid bookID
+			return;
+		}
+		
+		if (_issueType.equals("NormalIssue")) {
+			rules = lr.findRulesFor(readerType, btReadForIssue.getString(BookTitleProp.books_categoryType));
+		} else {
+			rules = lr.findRulesFor(readerType, _issueType);
+		}
+		
 		
 		if (rules==null) {
 			// Rules are not set 
@@ -163,35 +199,101 @@ public class CompoundController {
 			
 		}
 		
-		BookTitleRead btr = new BookTitleRead(database);
-		if ( (int)btr.countBkIssuedTo(_personID, _issueType) >= rules.getInteger(RulesProp.maxQuantity, 50)) {
-			// max qty number reached
+		if (_issueType.equals("NormalIssue")) {
+			if ( (int)btr.countBkIssuedToCategoryWise(_personID, btReadForIssue.getString(BookTitleProp.books_categoryType)) >= rules.getInteger(RulesProp.maxQuantity, 50)) {
+				// max qty number reached
+				return;
+			}
+			
+		} else {
+			if ( (int)btr.countBkIssuedTo(_personID, _issueType) >= rules.getInteger(RulesProp.maxQuantity, 50)) {
+				// max qty number reached
+				return;
+			}
+		}
+		
+		
+		if (btReadForIssue.getString(BookTitleProp.books_borrowedBy) !=null) {
+			// Book is already issues
 			return;
 		}
 		
-		try {
-			if (btr.personWhomeBookIssued(_bookID)!=null) {
-				// book is already issued
-				return;
-			}
-		} catch (Exception e) {
-			// null pointer exception may occur as we do arraylist operate
-			// inavalid bookID
-			return;
-		}
+		
+		Date tempDate = new Date ();
+		
+		int tempDays = rules.getInteger(RulesProp.dayLimit);
 		
 		
 
-		rules.getInteger(RulesProp.dayLimit);
-		
-		Date expectedReturn = new Date ();
-		
 		// update book Fields
-		btr.issueBookToPersonACID(_bookID, _personID, _issueType,  new Date (), expectedReturn);
+		btr.issueBookToPersonACID(_bookID, _personID, _issueType,  tempDate, Utility.addLibDays(tempDate, tempDays));
 		
 		
 		
 		
 	}
+	
+	public void returnBook (String _bookID) {
+		
+		String database = "test12";
+		
+		BookTitleRead btr = new BookTitleRead(database);
+		
+		String _personID;
+		
+		// check for dt limit fine.
+		Document bt = btr.findByBookIdForReturnAndTransactionHistory(_bookID);
+		if (bt==null) {
+			// invalid bookID
+			return;
+		}
+		
+		_personID = bt.getString(BookTitleProp.books_borrowedBy);
+		if (_personID==null) {
+			// book is not issued
+			return;
+		}
+		
+		Date expectedReturnDate = bt.getDate(BookTitleProp.books_expectedReturnDate);
+		
+		PersonRead pr = new PersonRead(database);
+		Document person = pr.findByPersonId(_personID);
+		
+		LibraryRulesRead lr = new LibraryRulesRead(database);
+		String _bkCatOrIssueType = null;
+		
+		if (bt.getString(BookTitleProp.books_issuedType).equals("NormalIssue")) {
+			_bkCatOrIssueType= bt.getString(BookTitleProp.books_categoryType);
+		} else {
+			_bkCatOrIssueType= bt.getString(BookTitleProp.books_issuedType);
+		}
+		
+		
+		Document rules = lr.findRulesFor(person.getString(PersonProp.readerType), _bkCatOrIssueType);
+		int fine= (Utility.daysBetween(bt.getDate(BookTitleProp.books_expectedReturnDate), new Date()) 
+				-  rules.getInteger(RulesProp.dayLimit, 300))*	rules.getInteger(RulesProp.finePerDay);
+		
+		if (fine>0) {
+			// prompt for fine and get whether to continue or cancel
+		} else {
+			fine=0;
+		}
+		
+		btr.returnBookACID(_bookID);
+		Document his = DocumemtRepository.TransactionHistory(bt.getString(BookTitleProp.books_issuedType), bt.getDate(BookTitleProp.books_issueDate), 
+				bt.getDate(BookTitleProp.books_expectedReturnDate), _bookID, fine, _personID, person.getString(PersonProp.courseyear), 
+				person.getString(PersonProp.branch), person.getString(PersonProp.degree), 0, bt.getString(BookTitleProp.bookName), bt.getString(BookTitleProp.author));
+		// transaction history
+		
+		TransactionHistoryRead thr = new TransactionHistoryRead(database);
+		thr.insertOne(his);
+	}
+
+
+	
+	
+	
+	
+	
 
 }
