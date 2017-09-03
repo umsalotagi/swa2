@@ -14,15 +14,20 @@ import java.util.regex.Pattern;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Calendar;
 
 //import org.bson.BsonType;
 import org.bson.Document;
 import org.bson.conversions.Bson;
 
 import com.mongodb.MongoClient;
+import com.mongodb.client.AggregateIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.model.Accumulators;
+import com.mongodb.client.model.Aggregates;
 //import com.mongodb.client.model.Filters;
 //import com.sun.net.httpserver.Filter;
 
@@ -46,7 +51,26 @@ public class TransactionHistoryRead implements TransactionHistoryReadIn {
 		
 	}
 	
+	public static Date dayStartTime(Date xdate){
+	      Calendar cal = Calendar.getInstance();
+	      cal.setTime(xdate);
+	      int year=cal.get(cal.YEAR);
+	      int month=cal.get(cal.MONTH);
+	      int date=cal.get(cal.DATE);
+	      cal.set(year, month, date,0,0,1);
+	      return cal.getTime();
+		}	
 	
+	
+	public static Date dayEndTime(Date xdate){
+	      Calendar cal = Calendar.getInstance();
+	      cal.setTime(xdate);
+	      int year=cal.get(cal.YEAR);
+	      int month=cal.get(cal.MONTH);
+	      int date=cal.get(cal.DATE);
+	      cal.set(year, month, date,23,59,59);
+	      return cal.getTime();
+		}
 	
 	@Override
 	public long count() {
@@ -153,7 +177,7 @@ public class TransactionHistoryRead implements TransactionHistoryReadIn {
 	public MongoCursor<Document> findByDateOfIssue(Date startDate,Date endDate) {
 		// TODO Auto-generated method stub
 //		LocalDate date = LocalDate.now();
-		
+//		collection.aggregate(Arrays.asList(Aggregates.match(eq($))))
 		return collection.find(and(gte(dateOfIssue,startDate),lt(dateOfIssue,endDate))).iterator();
 	}
 
@@ -211,7 +235,7 @@ public class TransactionHistoryRead implements TransactionHistoryReadIn {
 	}
 
 	@Override
-	public MongoCursor<Document> findByAuthour(String _author) {
+	public MongoCursor<Document> findByAuthor(String _author) {
 		// TODO Auto-generated method stub
 		return collection.find(eq(author,_author)).iterator();
 	}
@@ -233,14 +257,7 @@ public class TransactionHistoryRead implements TransactionHistoryReadIn {
 			filters.add(c);
 
 		}
-		if (_dateOfIssue!=null) {
-			Bson c=(Bson) eq(dateOfIssue,_dateOfIssue);
-			filters.add(c);
-		}	
-		if (_dateOfReturn!=null) {
-			Bson c=(Bson) eq(dateOfReturn,_dateOfReturn);
-			filters.add(c);
-		}
+
 		
 		if (_bookID!=null) {
 			Bson c=(Bson) eq(bookID,_bookID);
@@ -271,10 +288,34 @@ public class TransactionHistoryRead implements TransactionHistoryReadIn {
 			filters.add(c);
 		}
 		
+		if (_dateOfIssue!=null) {
+			Bson c=(Bson) and(gte(dateOfIssue,dayStartTime(_dateOfIssue)),lt(dateOfIssue,dayEndTime(_dateOfIssue)));
+			filters.add(c);
+		}
+		
+		if (_dateOfReturn!=null) {
+			Bson c=(Bson) and(gte(dateOfReturn,dayStartTime(_dateOfReturn)),lt(dateOfReturn,dayEndTime(_dateOfReturn)));
+			filters.add(c);
+		}
+		
 		System.out.println(filters.toString());		
 		return  collection.find(and(filters)).iterator();
 				
 	
+	}
+	
+	@Override
+	public MongoCursor<Document> MostBooksUsed() {
+		AggregateIterable<Document> iterable = collection.aggregate(Arrays.asList(
+				Aggregates.group("$bookTitleID", Accumulators.sum("count", 1))));
+		
+		return (MongoCursor<Document>) iterable;
+	}
+
+	@Override
+	public MongoCursor<Document> MostUsedByPerson() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	@Override
@@ -282,6 +323,14 @@ public class TransactionHistoryRead implements TransactionHistoryReadIn {
 		// TODO Auto-generated method stub
 		collection.insertOne(TransactionHistory);
 	}
+
+	@Override
+	public AggregateIterable<Document> findByBookTitleID(String bookTitleID) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
 	
 
 }

@@ -74,13 +74,13 @@ public class TransactionHistoryTest {
 
 				
 		try {
-			thr.insertOne(new Document(issuetype,"Normal").append(dateOfIssue, date).append(dateOfReturn,addDays(date)).append(bookID,"40A.3").append(fineCollected, 40).append(personID, "1020")
+			thr.insertOne(new Document(issuetype,"Normal").append(dateOfIssue, date).append(dateOfReturn,addDays(date)).append(bookID,"40A.3").append(bookTitleID,"40A").append(fineCollected, 40).append(personID, "1020")
 					.append(courseyear, "Third").append(branch, "Mechanical").append(degree, "BE").append(bookName, "bookname1").append(author, "author1"));
 
-			thr.insertOne(new Document(issuetype,"Normal").append(dateOfIssue, date).append(dateOfReturn,addDays(date)).append(bookID,"40A.2").append(fineCollected, 0).append(personID, "1111")
+			thr.insertOne(new Document(issuetype,"Normal").append(dateOfIssue, date).append(dateOfReturn,addDays(date)).append(bookID,"40A.2").append(bookTitleID,"40A").append(fineCollected, 0).append(personID, "1111")
 					.append(courseyear, "Third").append(branch, "Mechanical").append(degree, "BE").append(bookName, "bookname1").append(author, "author1"));
 			
-			thr.insertOne(new Document(issuetype,"Bookbank").append(dateOfIssue, addDays(addDays(date))).append(dateOfReturn,addDays2(20)).append(bookID,"30A.3").append(fineCollected, 15).append(personID, "2222")
+			thr.insertOne(new Document(issuetype,"Bookbank").append(dateOfIssue, addDays(addDays(date))).append(dateOfReturn,addDays2(20)).append(bookID,"30A.3").append(bookTitleID,"30A").append(fineCollected, 15).append(personID, "2222")
 					.append(courseyear, "Second").append(branch, "Computer").append(degree, "BE").append(bookName, "bookname3").append(author, "author3"));
 			
 		} catch(Exception e) {
@@ -89,106 +89,112 @@ public class TransactionHistoryTest {
 		
 	}
 	
+//	@Test
+//	public void count() {
+//		assertEquals("Asserting count: ", 3,thr.count());
+//	}
+//	
+//	@Test
+//	public void countToday() {
+//		MongoCursor<Document> cur = thr.findByDateOfReturn(date3,date4);
+//		int x=0;
+////		System.out.println(date3 +" | " + date4 );
+//		System.out.println("Todays date: "+ forToday());
+//
+//		while (cur.hasNext()) {
+//			Document d = cur.next();
+//			System.out.println(d.getDate(dateOfReturn).toString()+" "+d.getString("bookID"));	
+//			x++;
+//		}
+//		
+//		assertEquals(1, x);
+//	}
+//		
+//	@Test
+//	public void findByIssuetype() {
+////		assertEquals("Asserting Issuetype ", "Normal",thr.findByIssuetype("Normal"));
+//		
+//		MongoCursor<Document> cur = thr.findByIssuetype("Normal");
+//		int x=0;
+//		while (cur.hasNext()) {
+//			Document d = cur.next();
+//			
+//			System.out.println(d.getString("bookID"));	
+//			x++;
+//		}
+//		
+//		assertEquals(2, x);
+//		
+//	}	
+//	
+//	@Test
+//	public void findByDateOfIssue() {
+//  	
+//		MongoCursor<Document> cur = thr.findByDateOfIssue(date1,date2);
+//		int x=0;
+//		System.out.println(date1 +" | " + date2);
+//
+//		while (cur.hasNext()) {
+//			Document d = cur.next();
+//			System.out.println(d.getDate(dateOfIssue).toString()+" "+d.getString("bookID"));	
+//			x++;
+//		}
+//		
+//		assertEquals(2, x);
+//		
+//	}
+//	
+//	
+//	@Test
+//	public void findByDateOfReturn() {
+//		
+//	//	System.out.println(addDays2(20) + " actual date stored");
+//		
+//		MongoCursor<Document> cur = thr.findByDateOfReturn(date3,date4);
+//		int x=0;
+////		System.out.println(date3 +" | " + date4 );
+//
+//		while (cur.hasNext()) {
+//			Document d = cur.next();
+//			System.out.println(d.getDate(dateOfReturn).toString()+" "+d.getString("bookID"));	
+//			x++;
+//		}
+//		
+//		assertEquals(1, x);
+//		
+//	}
+//	
+//	@Test
+//	public void countReturnedFromTo() {
+//		
+//		Date date1=  provideDate(2017,7,27);
+//		Date date2=  provideDate(2017,8,4);
+//		System.out.println("counts for retuen in: "+ date1+" ! "+date2);
+//		long x= thr.countFromTo(date1, date2);
+//		
+//		assertEquals(2, x);
+//		
+//	}
+//		
+//	@Test
+//	public void findCompound() {
+// 
+//		MongoCursor<Document> cur = thr.findCompound("Normal",null,null,null,null,"1111",null,null,null,null,null);
+//		int x=0;
+//	while (cur.hasNext()) {
+//		Document d = cur.next();
+//		System.out.println("that book is "+d.getString("bookID"));	
+//		x++;
+//	}
+//	
+//	assertEquals(1, x);
+//	
+//   }
+	
 	@Test
-	public void count() {
-		assertEquals("Asserting count: ", 3,thr.count());
+	public void mostBooksUsed(){
+		MongoCursor<Document> cur = thr.MostBooksUsed();
+		assertEquals("40A", cur);
 	}
-	
-	@Test
-	public void countToday() {
-		MongoCursor<Document> cur = thr.findByDateOfReturn(date3,date4);
-		int x=0;
-//		System.out.println(date3 +" | " + date4 );
-		System.out.println("Todays date: "+ forToday());
-
-		while (cur.hasNext()) {
-			Document d = cur.next();
-			System.out.println(d.getDate(dateOfReturn).toString()+" "+d.getString("bookID"));	
-			x++;
-		}
-		
-		assertEquals(1, x);
-	}
-		
-	@Test
-	public void findByIssuetype() {
-//		assertEquals("Asserting Issuetype ", "Normal",thr.findByIssuetype("Normal"));
-		
-		MongoCursor<Document> cur = thr.findByIssuetype("Normal");
-		int x=0;
-		while (cur.hasNext()) {
-			Document d = cur.next();
-			
-			System.out.println(d.getString("bookID"));	
-			x++;
-		}
-		
-		assertEquals(2, x);
-		
-	}	
-	
-	@Test
-	public void findByDateOfIssue() {
-  	
-		MongoCursor<Document> cur = thr.findByDateOfIssue(date1,date2);
-		int x=0;
-		System.out.println(date1 +" | " + date2);
-
-		while (cur.hasNext()) {
-			Document d = cur.next();
-			System.out.println(d.getDate(dateOfIssue).toString()+" "+d.getString("bookID"));	
-			x++;
-		}
-		
-		assertEquals(2, x);
-		
-	}
-	
-	
-	@Test
-	public void findByDateOfReturn() {
-		
-	//	System.out.println(addDays2(20) + " actual date stored");
-		
-		MongoCursor<Document> cur = thr.findByDateOfReturn(date3,date4);
-		int x=0;
-//		System.out.println(date3 +" | " + date4 );
-
-		while (cur.hasNext()) {
-			Document d = cur.next();
-			System.out.println(d.getDate(dateOfReturn).toString()+" "+d.getString("bookID"));	
-			x++;
-		}
-		
-		assertEquals(1, x);
-		
-	}
-	
-	@Test
-	public void countReturnedFromTo() {
-		
-		Date date1=  provideDate(2017,7,27);
-		Date date2=  provideDate(2017,8,4);
-		System.out.println("counts for retuen in: "+ date1+" ! "+date2);
-		long x= thr.countFromTo(date1, date2);
-		
-		assertEquals(2, x);
-		
-	}
-		
-	@Test
-	public void findCompound() {
- 
-		MongoCursor<Document> cur = thr.findCompound("Normal",null,null,null,null,"1111",null,null,null,null,null);
-		int x=0;
-	while (cur.hasNext()) {
-		Document d = cur.next();
-		System.out.println("that book is "+d.getString("bookID"));	
-		x++;
-	}
-	
-	assertEquals(1, x);
-	
-   }
 
 }

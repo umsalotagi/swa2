@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.mongodb.client.MongoCursor;
 import com.swapasya.repo.BookTitleRead;
 import com.swapasya.repo.TransactionHistoryRead;
+import com.swapasya.controller.Utility;
 
 
 @RestController
@@ -28,6 +29,22 @@ public class TransactionHistoryController {
 		   multiQueryHistoryDoc = TransactionHistoryRead.findCompound(issuetype,dateOfIssue,dateOfReturn, bookID,fineCollected,personID, courseyear, branch, degree,bookName, author);
 		   
 		   return multiQueryHistoryDoc;
+		}
+		
+		@RequestMapping(value="/MostBooksUsed/{fromDate,toDate}",method=RequestMethod.GET)
+		public MongoCursor<Document> MostBooksUsed(@PathVariable Date fromDate, Date toDate) {
+			MongoCursor<Document> MostBooksUsedDoc=null;
+			TransactionHistoryRead TransactionHistoryRead =new TransactionHistoryRead("test4");
+		
+			MostBooksUsedDoc = TransactionHistoryRead.MostBooksUsed();
+
+			return MostBooksUsedDoc;
+		}
+
+
+		public MongoCursor<Document> MostUsedByPerson() {
+
+			return null;
 		}
 	
 
