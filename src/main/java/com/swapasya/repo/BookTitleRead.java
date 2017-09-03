@@ -244,10 +244,10 @@ public class BookTitleRead implements BookTitleReadIn {
 	}
 	
 	
-	public long countBkIssuedToCategoryWise (String _personID, String _categoryType) {
+	public long countBkIssuedToCategoryWiseNormalIssue (String _personID, String _categoryType) {
 		
 		MongoCollection<Document> collection = database.getCollection(BookTitle);
-		return collection.count(and (eq(books_borrowedBy, _personID), eq(books_categoryType, _categoryType)));
+		return collection.count(and (eq(books_borrowedBy, _personID),eq(books_issuedType, "NormalIssue"), eq(books_categoryType, _categoryType)));
 		
 	}
 	

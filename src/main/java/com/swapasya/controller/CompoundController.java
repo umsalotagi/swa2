@@ -163,21 +163,11 @@ public class CompoundController {
 		}
 		
 		
-	
-		
 		LibraryRulesRead lr = new LibraryRulesRead(database);
 		// _issueType  is Normal then we need category type CD/Book/Magazine
 		Document rules = null;
 		
 		BookTitleRead btr = new BookTitleRead(database);
-		
-		// check in assignlist
-		if (btr.findInAssignList(_personID, _bookID)==null) {
-			
-		}
-		
-		
-		
 		
 		Document btReadForIssue = btr.readForIssueBook(_bookID);
 		
@@ -185,6 +175,20 @@ public class CompoundController {
 			// invalid bookID
 			return;
 		}
+		
+		String bkID = btReadForIssue.getString("_id");
+		
+		// check in assignlist
+		if (btr.findInAssignList(_personID, _bookID)==null) {
+			// person is not in assign list
+			
+			// check whether all available books are assigned are NOT
+			if (btr.countAvailableBooksInBookTitle(bkID) <= btr.countAssignListedPersons(bkID)) {
+				// all books assigned
+				return;
+			}
+		}
+		
 		
 		if (_issueType.equals("NormalIssue")) {
 			rules = lr.findRulesFor(readerType, btReadForIssue.getString(BookTitleProp.books_categoryType));
@@ -200,7 +204,7 @@ public class CompoundController {
 		}
 		
 		if (_issueType.equals("NormalIssue")) {
-			if ( (int)btr.countBkIssuedToCategoryWise(_personID, btReadForIssue.getString(BookTitleProp.books_categoryType)) >= rules.getInteger(RulesProp.maxQuantity, 50)) {
+			if ( (int)btr.countBkIssuedToCategoryWiseNormalIssue(_personID, btReadForIssue.getString(BookTitleProp.books_categoryType)) >= rules.getInteger(RulesProp.maxQuantity, 50)) {
 				// max qty number reached
 				return;
 			}
@@ -228,10 +232,9 @@ public class CompoundController {
 		// update book Fields
 		btr.issueBookToPersonACID(_bookID, _personID, _issueType,  tempDate, Utility.addLibDays(tempDate, tempDays));
 		
-		
-		
-		
 	}
+	
+	
 	
 	public void returnBook (String _bookID) {
 		
