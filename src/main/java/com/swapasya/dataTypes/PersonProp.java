@@ -24,7 +24,7 @@ public class PersonProp {
 	public static final String parentContact = "parentContact";
 	
 	public static final String role = "role"; // (e.g student, teacher,principle,HOD) (Act as Designation )
-	public static final String accessType = "accessType"; // (e.g studentAccess, teacherAccess,principle,HOD)
+	//public static final String accessType = "accessType"; // (e.g studentAccess, teacherAccess,principle,HOD)
 	public static final String readerType = "readerType"; // (e.g. studentReder, teacherReader, topper, gate etc.
 	public static final String admissionDate = "admissionDate";
 //	public static final String transactionID = "transactionID"; // (transactionIDs)

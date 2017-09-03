@@ -134,10 +134,6 @@ public class PersonRead implements PersonReadIn {
 	public String getReaderType(String _personId) {
 		return collection.find(eq(personID, _personId)).projection(new Document(readerType, 1)).first().getString(readerType);
 	}
-	
-	public String getAccessType(String _personId) {
-		return collection.find(eq(personID, _personId)).projection(new Document(accessType, 1)).first().getString(accessType);
-	}
 
 	@Override
 	public void insertOne(Document person) {

@@ -59,7 +59,7 @@ public class UnRegisteredPerson implements UnRegisteredPersonIn{
 
 	@Override
 	public void delete(String personID) {
-		// TODO Auto-generated method stub
+		collection.deleteOne(eq("_id", personID));
 		
 	}
 	
@@ -171,6 +171,12 @@ public class UnRegisteredPerson implements UnRegisteredPersonIn{
 		MongoCollection<Document> collection = database.getCollection(UnRegisteredPerson);
 		collection.insertOne(_UnRegisteredPerson);
 		
+	}
+
+	@Override
+	public MongoCursor<Document> setFilterAndFindByPersonName(String personName) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	

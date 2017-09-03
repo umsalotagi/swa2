@@ -244,6 +244,14 @@ public class BookTitleRead implements BookTitleReadIn {
 	}
 	
 	
+	public long countBkIssuedToCategoryWise (String _personID, String _categoryType) {
+		
+		MongoCollection<Document> collection = database.getCollection(BookTitle);
+		return collection.count(and (eq(books_borrowedBy, _personID), eq(books_categoryType, _categoryType)));
+		
+	}
+	
+	
 	public long countAllBkIssuedTo (String _personID) {
 		
 		MongoCollection<Document> collection = database.getCollection(BookTitle);
@@ -351,6 +359,16 @@ public class BookTitleRead implements BookTitleReadIn {
 		}
 	}
 	
+	
+	public Document readForIssueBook (String _bookID) {
+		MongoCollection<Document> collection = database.getCollection(BookTitle);
+		try {
+			return collection.find(new Document(books_bookID,_bookID)).projection(new Document ("Books.$.borrowedBy",1).append("Books.$.categoryType", 1)).first();
+		} catch (Exception e) {
+			return null;
+		}
+	}
+	
 	public void issueBookToPerson (String _bookID, String _personID, String _issuedType, Date _issueDate, Date _expectedReturnDate) {
 		
 		MongoCollection<Document> collection = database.getCollection(BookTitle);
@@ -373,8 +391,20 @@ public class BookTitleRead implements BookTitleReadIn {
 		
 	}
 	
-	public void returnBookACID () {
+	public void returnBookACID (String _bookID) {
+		MongoCollection<Document> collection = database.getCollection(BookTitle);
 		
+		Document updateBk2 = new Document ("Books.$.borrowedBy", null).append("Books.$.issuedType", null);
+		Document bt1 =collection.find(eq(books_bookID, _bookID)).projection(new Document (waitList_personID, 1)).sort(new Document(waitList_timestamp, 1)).first();
+		Document toRemove = new Document(s_personID, bt1.getString(waitList_personID));
+		
+		collection.updateOne(new Document (books_bookID, _bookID), new Document ("$set",updateBk2).append("$pull", new Document (waitList, toRemove))
+				.append("$push", new Document (assignList, toRemove)));
+	}
+	
+	public Document findByBookIdForTransactionHistory (String _bookId) {
+		MongoCollection<Document> collection = database.getCollection(BookTitle);
+		return collection.find(eq(books_bookID, _bookId)).projection(new Document (bookTitleID,1).append(bookName, 1).append(author, 1).append(publication, 1).append("Books.$.expectedReturnDate",1)).first();
 	}
 	
 	
