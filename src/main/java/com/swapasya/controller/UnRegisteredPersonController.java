@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.mongodb.client.MongoCursor;
-import com.swapasya.repo.UnRegisteredPerson;
+import com.swapasya.repo.UnRegisteredPersonRead;
 
 @RestController
 @RequestMapping("unRegisteredPerson")
@@ -20,7 +20,7 @@ public class UnRegisteredPersonController {
 	@RequestMapping(value = "/search_person/{personID}", method = RequestMethod.GET)
 	public MongoCursor<Document> searchPerson(@PathVariable String search, @PathVariable String txt) {
 
-		UnRegisteredPerson personRead = new UnRegisteredPerson("test4");
+		UnRegisteredPersonRead personRead = new UnRegisteredPersonRead("test4");
 		if (search != null && txt != null) {
 			switch (search) {
 			case "PersonName":
@@ -40,7 +40,7 @@ public class UnRegisteredPersonController {
 	@RequestMapping(value = "/edit/{personID}", method = RequestMethod.GET)
 	public Document showPersonFull(@PathVariable String tempPersonID) {
 
-		UnRegisteredPerson personRead = new UnRegisteredPerson("test4");
+		UnRegisteredPersonRead personRead = new UnRegisteredPersonRead("test4");
 		return personRead.findByPersonIdFULL(tempPersonID);
 
 	}
@@ -49,7 +49,7 @@ public class UnRegisteredPersonController {
 	@RequestMapping(value = "/update/", method = RequestMethod.POST)
 	public String updatePerson(@RequestBody Document person) {
 
-		UnRegisteredPerson personRead = new UnRegisteredPerson("test4");
+		UnRegisteredPersonRead personRead = new UnRegisteredPersonRead("test4");
 		personRead.updatePerson(person);
 		return "success";
 	}
@@ -61,14 +61,14 @@ public class UnRegisteredPersonController {
 	@RequestMapping(value = "/insert/", method = RequestMethod.POST)
 	public String insertPerson(@RequestBody Document person) {
 
-		UnRegisteredPerson personRead = new UnRegisteredPerson("test4");
+		UnRegisteredPersonRead personRead = new UnRegisteredPersonRead("test4");
 		personRead.insertOne(person);
 		return "success";
 	}
 
 	@RequestMapping(value = "/delete/{personID}", method = RequestMethod.DELETE)
 	public String deletePerson(@PathVariable String tempPersonID) {
-		UnRegisteredPerson personRead = new UnRegisteredPerson("test4");
+		UnRegisteredPersonRead personRead = new UnRegisteredPersonRead("test4");
 		personRead.delete(tempPersonID);
 		return "success";
 
@@ -76,7 +76,7 @@ public class UnRegisteredPersonController {
 	
 	@RequestMapping(value = "/validate/{personID}", method = RequestMethod.DELETE)
 	public String validatePerson(@PathVariable Document unRegisteredPerson) {
-		UnRegisteredPerson personRead = new UnRegisteredPerson("test4");
+		UnRegisteredPersonRead personRead = new UnRegisteredPersonRead("test4");
 		
 		// check if automatic ID generation is applicable or not
 		
