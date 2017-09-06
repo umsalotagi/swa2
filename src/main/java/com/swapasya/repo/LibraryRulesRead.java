@@ -83,6 +83,23 @@ public class LibraryRulesRead implements LibraryRulesReadIn{
 		}
 		
 	}
+	
+	
+	
+	// set of propertiesss
+	
+	public Document getProperties () {
+		MongoCollection<Document> collection = database.getCollection(LibraryRules);
+		return collection.find(eq("collegeIDXX", "collegeIDXX")).first();
+	}
+	
+	public void setProperties (String collegeID, boolean isIDsToBeGenaratedAutomatically, String startOfID ) {
+		new Document("collegeIDXX", "collegeIDXX").append("collegeID", collegeID).append("isIDsToBeGenaratedAutomatically", isIDsToBeGenaratedAutomatically)
+		.append("startOfID", startOfID);
+		// and current ID
+		
+		// person with startOfID is get created OR startOfID-1 gets created
+	}
 
 
 }

@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.mongodb.client.MongoCursor;
+import com.swapasya.repo.LibraryRulesRead;
 import com.swapasya.repo.UnRegisteredPersonRead;
 
 @RestController
@@ -89,6 +90,10 @@ public class UnRegisteredPersonController {
 		personRead.insertOne(unRegisteredPerson);
 		
 		// CASE - 2 : when automatic ID generation is applicable
+		LibraryRulesRead libraryRulesRead = new LibraryRulesRead("test4");
+		Document prop = libraryRulesRead.getProperties();
+		boolean isIDsToBeGenaratedAutomatically = prop.getBoolean("isIDsToBeGenaratedAutomatically");
+		
 		
 		
 		return "success";
