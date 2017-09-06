@@ -32,6 +32,7 @@ public class PersonProp {
 	
 	// Following fields are in disscusion
 	
+//	public static final String unRegisteredPersonID = "unRegisteredPersonID";
 	
 //	public static final String inPossession = "inPossession"; // IDs of book in possession seperated by ; e.g. ME406;MECH233;KK6677
 //	public static final String totalCategoryBksInPossesion = "totalCategoryBksInPossesion";

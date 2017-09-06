@@ -5,6 +5,8 @@ import static com.mongodb.client.model.Filters.eq;
 import static com.mongodb.client.model.Filters.regex;
 import static com.mongodb.client.model.Projections.fields;
 import static com.mongodb.client.model.Projections.include;
+import static com.swapasya.dataTypes.BookTitleProp.bookTitleID;
+import static com.swapasya.dataTypes.NameKinds.BookTitle;
 import static com.swapasya.dataTypes.NameKinds.Person;
 import static com.swapasya.dataTypes.PersonProp.*;
 import static com.swapasya.dataTypes.TransactionHistoryProp.dateOfIssue;
@@ -120,11 +122,23 @@ public class PersonRead implements PersonReadIn {
 	public Document findByPersonId(String _personId) {
 		return collection.find(eq(personID, _personId)).projection(projectionBasicProperties).first();
 	}
+	
+	public Document findByPersonIdFULL(String _personId) {
+		return collection.find(eq(personID, _personId)).first();
+	}
+	
+	public MongoCursor<Document> findByPersonId2 (String _personId) {
+		return collection.find(eq(personID, _personId)).projection(projectionBasicProperties).iterator();
+	}
 
 	@Override
 	public MongoCursor<Document> findByPersonName(String _personName) {
 		return collection.find(regex(personName, Pattern.compile(_personName, Pattern.CASE_INSENSITIVE)))
 				.projection(projectionBasicProperties).iterator();
+	}
+	
+	public void updatePerson (Document doc) {
+		collection.updateOne(eq(personID, doc.getString(personID)), new Document ("$set", doc));
 	}
 
 	public String getPersonRole(String _personId) {

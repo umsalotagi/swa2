@@ -5,7 +5,7 @@ public class UnRegisteredPersonProp {
 	// Person properties has to be very flexible
 	
 	//public static final String personID = "personID"; // Library ID of person e.g. BE10403 , 10403 etc.
-	public static final String personID = "_id"; // Library ID of person e.g. BE10403 , 10403 etc.
+	public static final String unRegisteredPersonID = "unRegisteredPersonID"; // Library ID of person e.g. BE10403 , 10403 etc.
 	public static final String password = "password"; // password for student account 
 	public static final String personName = "personName"; // full Name of person
 	public static final String address = "Address"; // address of student

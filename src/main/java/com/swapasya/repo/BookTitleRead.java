@@ -156,6 +156,12 @@ public class BookTitleRead implements BookTitleReadIn {
 		return collection.find(eq(books_bookID, _bookId)).projection(projectionBasicProperties).first();
 	}
 	
+	
+	public MongoCursor<Document> findByBookId2(String _bookId) {
+		MongoCollection<Document> collection = database.getCollection(BookTitle);
+		return collection.find(eq(books_bookID, _bookId)).projection(projectionBasicProperties).iterator();
+	}
+	
 	/**
 	 * @return BookTitle with projected properties of bookTitleID, bookName, author, publication
 	 */
@@ -163,6 +169,11 @@ public class BookTitleRead implements BookTitleReadIn {
 	public Document findByBookTitleId(String _bookTitleId) {
 		MongoCollection<Document> collection = database.getCollection(BookTitle);
 		return collection.find(eq(bookTitleID, _bookTitleId)).projection(projectionBasicProperties).first();
+	}
+	
+	public MongoCursor<Document> findByBookTitleId2 (String _bookTitleId) {
+		MongoCollection<Document> collection = database.getCollection(BookTitle);
+		return collection.find(eq(bookTitleID, _bookTitleId)).projection(projectionBasicProperties).iterator();
 	}
 	
 	/**

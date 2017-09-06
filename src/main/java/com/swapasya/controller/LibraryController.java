@@ -14,6 +14,7 @@ import com.swapasya.model.DBConnect;
 import com.swapasya.repo.BookTitleRepositoryMongoDB;
 
 @Controller
+@Deprecated
 public class LibraryController {
 
 	@RequestMapping(value = "/book_related1.html", method = RequestMethod.GET)
