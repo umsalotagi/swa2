@@ -95,10 +95,18 @@ public class LibraryRulesRead implements LibraryRulesReadIn{
 	
 	public void setProperties (String collegeID, boolean isIDsToBeGenaratedAutomatically, String startOfID ) {
 		new Document("collegeIDXX", "collegeIDXX").append("collegeID", collegeID).append("isIDsToBeGenaratedAutomatically", isIDsToBeGenaratedAutomatically)
-		.append("startOfID", startOfID);
+		.append("startOfID", startOfID).append("currentID", startOfID);
 		// and current ID
 		
 		// person with startOfID is get created OR startOfID-1 gets created
+	}
+	
+	public void setCurrentID (String currentID) {
+		
+	}
+	
+	public String getCurrentID () {
+		return null;
 	}
 
 
