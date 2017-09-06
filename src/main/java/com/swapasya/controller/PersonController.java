@@ -36,11 +36,11 @@ public class PersonController {
 	}
 	
 	
-	@RequestMapping(value = "/edit/{bookTitleID}", method = RequestMethod.GET)
-	public Document showPersonFull(@PathVariable String personId) {
+	@RequestMapping(value = "/edit/{personID}", method = RequestMethod.GET)
+	public Document showPersonFull(@PathVariable String personID) {
 
 		PersonRead personRead = new PersonRead("test4");
-		return personRead.findByPersonIdFULL(personId);
+		return personRead.findByPersonIdFULL(personID);
 
 	}
 
@@ -55,17 +55,17 @@ public class PersonController {
 	
 	
 	@RequestMapping(value = "/insert/", method = RequestMethod.POST)
-	public String insertPerson(@RequestBody Document bookTitle) {
+	public String insertPerson(@RequestBody Document person) {
 
 		PersonRead personRead = new PersonRead("test4");
-		personRead.insertOne(bookTitle);
+		personRead.insertOne(person);
 		return "success";
 	}
 
-	@RequestMapping(value = "/delete/{bookTitleID}", method = RequestMethod.DELETE)
-	public String deletePerson(@PathVariable String bookTitleID) {
+	@RequestMapping(value = "/delete/{personID}", method = RequestMethod.DELETE)
+	public String deletePerson(@PathVariable String personID) {
 		PersonRead personRead = new PersonRead("test4");
-		personRead.delete(bookTitleID);
+		personRead.delete(personID);
 		return "success";
 
 	}
