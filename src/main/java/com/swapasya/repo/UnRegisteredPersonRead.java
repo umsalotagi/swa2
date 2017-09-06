@@ -26,14 +26,14 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
 
-public class UnRegisteredPerson {
+public class UnRegisteredPersonRead {
 	
 	MongoDatabase database;
 	MongoCollection<Document> collection;
 	
 	static Bson projectionBasicProperties = fields(include(unRegisteredPersonID, personName, degree, branch, courseyear, division, rollNo, role , readerType));
 
-	public UnRegisteredPerson(String databaseName) {
+	public UnRegisteredPersonRead(String databaseName) {
 		MongoClient mongoClient = new MongoClient("localhost", 27017);
 		if (databaseName == null) {
 			database = mongoClient.getDatabase("local");
