@@ -67,9 +67,9 @@ public interface TransactionHistoryReadIn {
 		
 		MongoCursor<Document> findCompound(String issuetype,Date dateOfIssue, Date dateOfReturn,String bookID,Integer fineCollected,String personID,String courseyear,String branch,String degree,String bookName,String author);
 		
-		MongoCursor<Document> MostBooksUsed();
+		Document MostBooksUsed();
 		
-		MongoCursor<Document> MostUsedByPerson();
+		Document MostUsedByPerson();
 		
 		
 		

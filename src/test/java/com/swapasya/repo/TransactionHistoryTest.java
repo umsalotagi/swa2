@@ -68,7 +68,7 @@ public class TransactionHistoryTest {
 	public static void setUpBeforeClass() throws Exception {
 		System.out.println("start test");
 		// We will add data in here
-		thr = new TransactionHistoryRead("test3");
+		thr = new TransactionHistoryRead("test4");
 
 		
 
@@ -77,7 +77,7 @@ public class TransactionHistoryTest {
 			thr.insertOne(new Document(issuetype,"Normal").append(dateOfIssue, date).append(dateOfReturn,addDays(date)).append(bookID,"40A.3").append(bookTitleID,"40A").append(fineCollected, 40).append(personID, "1020")
 					.append(courseyear, "Third").append(branch, "Mechanical").append(degree, "BE").append(bookName, "bookname1").append(author, "author1"));
 
-			thr.insertOne(new Document(issuetype,"Normal").append(dateOfIssue, date).append(dateOfReturn,addDays(date)).append(bookID,"40A.2").append(bookTitleID,"40A").append(fineCollected, 0).append(personID, "1111")
+			thr.insertOne(new Document(issuetype,"Normal").append(dateOfIssue, date).append(dateOfReturn,addDays(date)).append(bookID,"40A.2").append(bookTitleID,"40A").append(fineCollected, 0).append(personID, "1020")
 					.append(courseyear, "Third").append(branch, "Mechanical").append(degree, "BE").append(bookName, "bookname1").append(author, "author1"));
 			
 			thr.insertOne(new Document(issuetype,"Bookbank").append(dateOfIssue, addDays(addDays(date))).append(dateOfReturn,addDays2(20)).append(bookID,"30A.3").append(bookTitleID,"30A").append(fineCollected, 15).append(personID, "2222")
@@ -193,8 +193,15 @@ public class TransactionHistoryTest {
 	
 	@Test
 	public void mostBooksUsed(){
-		MongoCursor<Document> cur = thr.MostBooksUsed();
+		String cur = thr.MostBooksUsed().getString("_id");
+		System.out.println(thr.MostBooksUsed());
 		assertEquals("40A", cur);
 	}
-
+	
+	@Test
+	public void mostUsedByPerson(){
+		String cur = thr.MostUsedByPerson().getString("_id");
+		System.out.println(thr.MostUsedByPerson());
+		assertEquals("1020", cur);
+	}
 }

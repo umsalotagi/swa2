@@ -31,9 +31,9 @@ public class TransactionHistoryController {
 		   return multiQueryHistoryDoc;
 		}
 		
-		@RequestMapping(value="/MostBooksUsed/{fromDate,toDate}",method=RequestMethod.GET)
-		public MongoCursor<Document> MostBooksUsed(@PathVariable Date fromDate, Date toDate) {
-			MongoCursor<Document> MostBooksUsedDoc=null;
+		@RequestMapping(value="/MostBooksUsed",method=RequestMethod.GET)
+		public Document MostBooksUsed(@PathVariable Date fromDate, Date toDate) {
+			Document MostBooksUsedDoc=null;
 			TransactionHistoryRead TransactionHistoryRead =new TransactionHistoryRead("test4");
 		
 			MostBooksUsedDoc = TransactionHistoryRead.MostBooksUsed();
@@ -41,10 +41,16 @@ public class TransactionHistoryController {
 			return MostBooksUsedDoc;
 		}
 
+		@RequestMapping(value="/MostUsedByPerson",method=RequestMethod.GET)
+		public Document MostUsedByPerson() {
 
-		public MongoCursor<Document> MostUsedByPerson() {
+			Document MostUsedByPersonDoc=null;
+			TransactionHistoryRead TransactionHistoryRead =new TransactionHistoryRead("test4");
+			
+			MostUsedByPersonDoc = TransactionHistoryRead.MostUsedByPerson();
 
-			return null;
+			return MostUsedByPersonDoc;		
+			
 		}
 	
 
