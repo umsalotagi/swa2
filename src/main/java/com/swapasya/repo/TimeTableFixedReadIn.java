@@ -5,9 +5,10 @@ import org.bson.Document;
 public interface TimeTableFixedReadIn {
 	
 	void addEvent (Document repeatativeEvent) ;
-	void removeEvent (String teacherID, String subject, String crassRoomID);
+	void removeEvent (String timeTableName, String teacherID, String subject, String crassRoomID);
+	void removeEvent (String id);
 	
-	void addLectureInEvent (String teacherID, String subject, String crassRoomID, Document lecturePactical);
-	void removeLectureInEvent (String teacherID, String subject, String crassRoomID, Document lecturePactical);
+	void addLectureInEvent (String timeTableName, String teacherID, String subject, String classRoomID, Document lecturePactical);
+	void removeLectureInEvent (String timeTableName, String teacherID, String subject, String classRoomID, Document lecturePactical);
 
 }

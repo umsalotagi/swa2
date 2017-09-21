@@ -19,6 +19,9 @@ public class ClassRoomProp {
 	public static final String s_students = "students";
 	
 	
+	// time table validity
+	public static final String validityFromDate = "validityFromDate";
+	public static final String validityToDate = "validityToDate";
 	
 
 }
