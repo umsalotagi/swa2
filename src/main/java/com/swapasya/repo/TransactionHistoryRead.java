@@ -28,6 +28,7 @@ import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Accumulators;
 import com.mongodb.client.model.Aggregates;
+import com.mongodb.client.model.Sorts;
 //import com.mongodb.client.model.Filters;
 //import com.sun.net.httpserver.Filter;
 
@@ -186,7 +187,9 @@ public class TransactionHistoryRead implements TransactionHistoryReadIn {
 	@Override
 	public MongoCursor<Document> findByDateOfReturn(Date startDate,Date endDate) {
 		// TODO Auto-generated method stub
+		Calendar cal = Calendar.getInstance();
 		return collection.find(and(gte(dateOfReturn,startDate),lt(dateOfReturn,endDate))).iterator();
+		
 	}
 
 	
@@ -305,17 +308,17 @@ public class TransactionHistoryRead implements TransactionHistoryReadIn {
 	}
 	
 	@Override
-	public MongoCursor<Document> MostBooksUsed() {
-		AggregateIterable<Document> iterable = collection.aggregate(Arrays.asList(
-				Aggregates.group("$bookTitleID", Accumulators.sum("count", 1))));
-		
-		return (MongoCursor<Document>) iterable;
+	public Document MostBooksUsed() {
+		Document iterable = collection.aggregate(Arrays.asList(
+				Aggregates.group("$bookTitleID", Accumulators.sum("count", 1)),Aggregates.sort(new Document("count",-1)))).first();	
+		return iterable;
 	}
 
 	@Override
-	public MongoCursor<Document> MostUsedByPerson() {
-		// TODO Auto-generated method stub
-		return null;
+	public Document MostUsedByPerson() {
+		Document iterable = collection.aggregate(Arrays.asList(
+				Aggregates.group("$personID", Accumulators.sum("count", 1)),Aggregates.sort(new Document("count",-1)))).first();	
+		return iterable;
 	}
 
 	@Override
