@@ -16,6 +16,7 @@ import static com.mongodb.client.model.Projections.*;
 import com.mongodb.client.model.Sorts;
 import com.swapasya.dataTypes.BookProp;
 import com.swapasya.dataTypes.NameKinds;
+import static com.swapasya.dataTypes.NameKinds.CRCalendar;
 
 import org.bson.Document;
 import org.bson.conversions.Bson;
@@ -31,6 +32,7 @@ import java.util.List;
 
 import com.mongodb.MongoClient;
 import static com.swapasya.dataTypes.CRCalenderProp.*;
+import static com.swapasya.dataTypes.NameKinds.BookTitle;
 
 
 public class CRCalenderRead implements CRCalenderReadIn {
@@ -71,7 +73,9 @@ public class CRCalenderRead implements CRCalenderReadIn {
 	@Override
 	public void createCalenderFromFixedTimeTable(Document repeatativeEvent, Date eventStartDate, Date eventEndDate) {
 		// TODO Auto-generated method stub
-		
+		MongoCollection<Document> collection = database.getCollection(CRCalendar);
+//		repeatativeEvent.append(key, value);
+		collection.insertOne(repeatativeEvent);
 	}
 
 	@Override

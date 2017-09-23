@@ -13,5 +13,7 @@ public class NameKinds {
 	public static final String BookTitle = "BookTitle";
 	public static final String AssignList = "AssignList";
 	public static final String WaitList = "WaitList";
-
+	public static final String TimeTableFixed = "TimeTableFixed";
+	public static final String ClassRoom = "ClassRoom";
+	public static final String CRCalendar = "CRCalendar";
 }
